@@ -1,0 +1,137 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Calories
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080/
+paths:
+  /baseProducts:
+    get:
+      summary: List all base products
+      operationId: listProducts
+      tags:
+        - baseProduct
+      responses:
+        '200':
+          description: a list of base products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfBaseProductDto"
+    post:
+      summary: create new base product
+      operationId: createBaseProduct
+      tags:
+        - baseProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBaseProductRequest"
+      responses:
+        '201':
+          description: created base product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseProductDto"
+  /baseProducts/{baseProductId}:
+    get:
+      summary: get base product by id
+      operationId: baseProductById
+      tags:
+        - baseProduct
+      parameters:
+        - name: baseProductId
+          in: path
+          required: true
+          description: The id of the base product to retrieve
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: base product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseProductDto"
+    put:
+      summary: update new base product
+      operationId: updateBaseProduct
+      tags:
+        - baseProduct
+      parameters:
+        - name: baseProductId
+          in: path
+          required: true
+          description: The id of the base product to update
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBaseProductRequest"
+      responses:
+        '200':
+          description: updated base product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseProductDto"
+
+
+components:
+  schemas:
+    CreateBaseProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        nutrients:
+          $ref: "#/components/schemas/NutrientsDto"
+    UpdateBaseProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        nutrients:
+          $ref: "#/components/schemas/NutrientsDto"
+    BaseProductDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        nutrients:
+          $ref: "#/components/schemas/NutrientsDto"
+    NutrientsDto:
+      type: object
+      properties:
+        kcal:
+          type: number
+          format: double
+        proteins:
+          type: number
+          format: double
+        carbs:
+          type: number
+          format: double
+        fats:
+          type: number
+          format: double
+    ListOfBaseProductDto:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/BaseProductDto"
