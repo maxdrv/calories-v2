@@ -1,4 +1,4 @@
-package calories.home.com.calories;
+package com.home.calories;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
