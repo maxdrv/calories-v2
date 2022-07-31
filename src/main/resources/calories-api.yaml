@@ -91,6 +91,9 @@ components:
   schemas:
     CreateBaseProductRequest:
       type: object
+      required:
+        - name
+        - nutrients
       properties:
         name:
           type: string
@@ -98,6 +101,9 @@ components:
           $ref: "#/components/schemas/NutrientsDto"
     UpdateBaseProductRequest:
       type: object
+      required:
+        - name
+        - nutrients
       properties:
         name:
           type: string
@@ -105,6 +111,10 @@ components:
           $ref: "#/components/schemas/NutrientsDto"
     BaseProductDto:
       type: object
+      required:
+        - id
+        - name
+        - nutrients
       properties:
         id:
           type: integer
@@ -115,6 +125,11 @@ components:
           $ref: "#/components/schemas/NutrientsDto"
     NutrientsDto:
       type: object
+      required:
+        - kcal
+        - proteins
+        - fats
+        - carbs
       properties:
         kcal:
           type: number
@@ -122,14 +137,16 @@ components:
         proteins:
           type: number
           format: double
-        carbs:
+        fats:
           type: number
           format: double
-        fats:
+        carbs:
           type: number
           format: double
     ListOfBaseProductDto:
       type: object
+      required:
+        - content
       properties:
         content:
           type: array
