@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-public class CorsController {
+public class CorsTestController {
 
     @GetMapping("/")
     public ResponseEntity<String> hello() {
