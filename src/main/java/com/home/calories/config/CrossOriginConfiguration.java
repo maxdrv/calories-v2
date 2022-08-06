@@ -14,17 +14,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CrossOriginConfiguration {
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry
-//                        .addMapping("/baseProducts").allowedOrigins("http://localhost:3000");
-//            }
-//        };
-//    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry
+                        .addMapping("/baseProducts").allowedOrigins("http://localhost:3000");
+            }
+        };
+    }
 
+    // log requests
     @Bean
     public CommonsRequestLoggingFilter logFilter() {
         CommonsRequestLoggingFilter filter
@@ -43,6 +44,7 @@ public class CrossOriginConfiguration {
         return new ServletRegistrationBean(dispatcherServlet());
     }
 
+    // log responses
     @Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
     public DispatcherServlet dispatcherServlet() {
         return new LoggableDispatcherServlet();
