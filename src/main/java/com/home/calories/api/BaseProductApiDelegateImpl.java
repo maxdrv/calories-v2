@@ -22,6 +22,7 @@ public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
     public ResponseEntity<ListOfBaseProductDto> listProducts() {
         return ResponseEntity.ok(new ListOfBaseProductDto().content(baseProductService.findAll()));
     }
+
     @Override
     public ResponseEntity<BaseProductDto> baseProductById(Long baseProductId) {
         return ResponseEntity.ok(baseProductService.findByIdOrThrow(baseProductId));
