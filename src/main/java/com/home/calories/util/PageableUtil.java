@@ -1,5 +1,10 @@
 package com.home.calories.util;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.lang.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +12,7 @@ public class PageableUtil {
 
     public static final String SORT_ATTRIBUTE_ID_ASC = "id,asc";
 
-    private PageableUtils() {
+    private PageableUtil() {
         throw new UnsupportedOperationException();
     }
 
