@@ -3,25 +3,43 @@ package com.home.calories.api;
 import com.home.calories.openapi.api.BaseProductsApiDelegate;
 import com.home.calories.openapi.model.BaseProductDto;
 import com.home.calories.openapi.model.CreateBaseProductRequest;
-import com.home.calories.openapi.model.ListOfBaseProductDto;
+import com.home.calories.openapi.model.PageOfBaseProductDto;
 import com.home.calories.openapi.model.UpdateBaseProductRequest;
+import com.home.calories.repository.BaseProductFilter;
 import com.home.calories.service.BaseProductService;
+import com.home.calories.util.PageableUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
 
     private final BaseProductService baseProductService;
 
-    public BaseProductApiDelegateImpl(BaseProductService baseProductService) {
-        this.baseProductService = baseProductService;
+    @Override
+    public ResponseEntity<PageOfBaseProductDto> pageProducts(
+            @Nullable String name,
+            Integer page,
+            Integer size,
+            @Nullable String sort
+    ) {
+        var sortLiteral = sort == null ? "id,asc" : sort;
+        var pageRequest = PageRequest.of(
+                page,
+                size,
+                PageableUtil.parseParameterIntoSort(sortLiteral)
+        );
+
+        var filter = new BaseProductFilter();
+        filter.setName(name);
+
+        return ResponseEntity.ok(baseProductService.page(filter, pageRequest));
     }
 
-    @Override
-    public ResponseEntity<ListOfBaseProductDto> listProducts() {
-        return ResponseEntity.ok(new ListOfBaseProductDto().content(baseProductService.findAll()));
-    }
 
     @Override
     public ResponseEntity<BaseProductDto> baseProductById(Long baseProductId) {

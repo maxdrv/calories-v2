@@ -9,17 +9,40 @@ servers:
 paths:
   /baseProducts:
     get:
-      summary: List all base products
-      operationId: listProducts
+      summary: Page of base products
+      operationId: pageProducts
       tags:
         - baseProduct
+      parameters:
+        - name: name
+          in: path
+          description: filter by name of baseProduct
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
-          description: a list of base products
+          description: a page of base products
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListOfBaseProductDto"
+                $ref: "#/components/schemas/PageOfBaseProductDto"
     post:
       summary: create new base product
       operationId: createBaseProduct
@@ -158,11 +181,20 @@ components:
         carbs:
           type: number
           format: double
-    ListOfBaseProductDto:
+    PageOfBaseProductDto:
       type: object
       required:
         - content
       properties:
+        size:
+          type: integer
+        number:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
         content:
           type: array
           items:
