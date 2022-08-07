@@ -1,4 +1,4 @@
-package com.home.calories.test;
+package com.home.calories.util;
 
 import io.zonky.test.db.postgres.embedded.*;
 import org.springframework.context.annotation.Bean;

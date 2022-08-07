@@ -1,4 +1,4 @@
-package com.home.calories.test;
+package com.home.calories.util;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
