@@ -1,7 +1,8 @@
-package core.handlers;
+package com.home.calories.handler;
 
-import core.dto.errors.ErrorDetail;
-import core.dto.errors.ValidationError;
+import com.home.calories.dto.errors.ErrorDetail;
+import com.home.calories.dto.errors.ValidationError;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -19,10 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException manve, HttpHeaders headers, HttpStatus status, WebRequest request) {
