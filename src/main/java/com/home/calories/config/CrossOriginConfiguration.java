@@ -20,7 +20,9 @@ public class CrossOriginConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry
-                        .addMapping("/baseProducts").allowedOrigins("http://localhost:3000");
+                        .addMapping("/baseProducts/**")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedOrigins("http://localhost:3000");
             }
         };
     }
