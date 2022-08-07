@@ -38,4 +38,9 @@ public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
         return ResponseEntity.ok(baseProductService.update(baseProductId, request));
     }
 
+    @Override
+    public ResponseEntity<Void> deleteBaseProduct(Long baseProductId) {
+        baseProductService.delete(baseProductId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -85,7 +85,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BaseProductDto"
-
+    delete:
+      summary: delete base prodcut
+      operationId: deleteBaseProduct
+      tags:
+        - baseProduct
+      parameters:
+        - name: baseProductId
+          in: path
+          required: true
+          description: The id of the base product to delete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: base product deleted successfully
 
 components:
   schemas:

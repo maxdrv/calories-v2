@@ -71,6 +71,10 @@ public class BaseProductService {
         return findByIdOrThrow(updated.getId());
     }
 
+    public void delete(Long baseProductId) {
+        productMap.remove(baseProductId);
+    }
+
     private List<BaseProductDto> listProductsOrdered() {
         return productMap.values().stream().sorted(baseProductComparator).toList();
     }
