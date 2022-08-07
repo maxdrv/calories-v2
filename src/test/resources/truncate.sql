@@ -1,4 +1,4 @@
-truncate table base_products;
+truncate table base_product;
 
-alter sequence base_products_seq restart 10000;
+alter sequence base_product_seq restart 10000;
 
