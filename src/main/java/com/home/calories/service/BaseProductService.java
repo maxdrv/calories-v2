@@ -37,7 +37,7 @@ public class BaseProductService {
     }
 
     public BaseProductDto update(Long baseProductId, UpdateBaseProductRequest request) {
-        var created = baseProductRepository.insert(map(baseProductId, request));
+        var created = baseProductRepository.update(map(baseProductId, request));
         return map(created);
     }
 
