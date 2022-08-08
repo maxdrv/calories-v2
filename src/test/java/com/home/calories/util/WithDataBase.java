@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.event.ApplicationEventsTestExecutionListener;
@@ -29,6 +30,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 })
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class, databaseConnection = "dataSource")
 @SpringBootTest
+@ComponentScan("com.home.calories")
 public class WithDataBase {
 
     @Autowired

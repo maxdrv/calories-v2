@@ -1,0 +1,4 @@
+<dataset>
+    <base_product id="1" name="protein" kcal="150" proteins="23" fats="4" carbs="10"/>
+    <base_product id="2" name="milk" kcal="11" proteins="14" fats="13" carbs="12"/>
+</dataset>

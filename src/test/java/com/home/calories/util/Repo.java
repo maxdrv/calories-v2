@@ -5,11 +5,13 @@ import com.home.calories.openapi.model.NutrientsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Supplier;
+
 @Component
 @RequiredArgsConstructor
 public class Repo {
 
-    public static final CreateBaseProductRequest CREATE_MILK_REQUEST = new CreateBaseProductRequest()
+    public static final Supplier<CreateBaseProductRequest> CREATE_MILK_REQUEST = () -> new CreateBaseProductRequest()
             .name("milk")
             .nutrients(
                     new NutrientsDto()
@@ -19,7 +21,7 @@ public class Repo {
                             .carbs(12.0)
             );
 
-    public static final CreateBaseProductRequest CREATE_PROTEIN_REQUEST = new CreateBaseProductRequest()
+    public static final Supplier<CreateBaseProductRequest> CREATE_PROTEIN_REQUEST = () -> new CreateBaseProductRequest()
             .name("protein")
             .nutrients(
                     new NutrientsDto()
