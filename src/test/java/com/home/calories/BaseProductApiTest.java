@@ -134,6 +134,7 @@ public class BaseProductApiTest extends WithDataBase {
         caller.delete(2L).andExpect(status().isOk());
     }
 
+    // TODO fix me
     @Disabled("500 error ???")
     @Test
     void queryBaseProductPage() {
