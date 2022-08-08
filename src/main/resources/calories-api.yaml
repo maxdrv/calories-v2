@@ -17,6 +17,7 @@ paths:
         - name: name
           in: path
           description: filter by name of baseProduct
+          required: false
           schema:
             type: string
         - name: page
