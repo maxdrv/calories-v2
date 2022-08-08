@@ -13,20 +13,20 @@ public class Repo {
             .name("milk")
             .nutrients(
                     new NutrientsDto()
+                            .kcal(11.0)
                             .proteins(14.0)
                             .fats(13.0)
                             .carbs(12.0)
-                            .kcal(11.0)
             );
 
     public static final CreateBaseProductRequest CREATE_PROTEIN_REQUEST = new CreateBaseProductRequest()
             .name("protein")
             .nutrients(
                     new NutrientsDto()
+                            .kcal(150.0)
                             .proteins(23.0)
                             .fats(4.0)
                             .carbs(10.0)
-                            .kcal(150.0)
             );
 
 }
