@@ -18,6 +18,9 @@ public class WithDataBase {
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    protected Repo repo;
+
     /**
      * for debug on embedded postgres
      */
