@@ -15,7 +15,7 @@ paths:
         - baseProduct
       parameters:
         - name: name
-          in: path
+          in: query
           description: filter by name of baseProduct
           required: false
           schema:

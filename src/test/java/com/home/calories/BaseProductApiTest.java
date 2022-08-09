@@ -8,7 +8,6 @@ import com.home.calories.openapi.model.UpdateBaseProductRequest;
 import com.home.calories.util.Repo;
 import com.home.calories.util.WithDataBase;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -134,8 +133,6 @@ public class BaseProductApiTest extends WithDataBase {
         caller.delete(2L).andExpect(status().isOk());
     }
 
-    // TODO fix me
-    @Disabled("500 error ???")
     @Test
     void queryBaseProductPage() {
         for (int i = 1; i < 110; i++) {
