@@ -1,0 +1,12 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    ports:
+      - '55432:5432'
+    environment:
+      POSTGRES_DB: calories
+      POSTGRES_USER: calories
+      POSTGRES_PASSWORD: calories
+      POSTGRES_INITDB_ARGS: "-E=UTF8 --lc-collate=C --lc-ctype=C"
+
