@@ -21,7 +21,7 @@ public class CrossOriginConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry
                         .addMapping("/baseProducts/**")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedOrigins("http://localhost:3000");
             }
         };
