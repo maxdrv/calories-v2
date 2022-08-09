@@ -33,8 +33,8 @@ public class JdbcBaseProductRepository implements BaseProductRepository {
 
             String where = " WHERE name like :namePattern";
 
-            select += select + where;
-            count += count + where;
+            select += where;
+            count += where;
         }
 
         Integer totalElements = jdbcTemplate.queryForObject(count, params, Integer.class);
