@@ -141,8 +141,158 @@ public class BaseProductApiTest extends WithDataBase {
             caller.create(request).andExpect(status().isOk());
         }
 
-        caller.page("?page=0&size=10")
-                .andExpect(status().isOk());
+        caller.page("?page=0&size=3")
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                          "size": 3,
+                          "number": 0,
+                          "totalElements": 109,
+                          "totalPages": 37,
+                          "content": [
+                            {
+                              "id": 10000,
+                              "name": "protein1",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            },
+                            {
+                              "id": 10001,
+                              "name": "protein2",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            },
+                            {
+                              "id": 10002,
+                              "name": "protein3",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            }
+                          ]
+                        }""", true));
+
+        caller.page("?page=1&size=3")
+                .andExpect(content().json("""
+                        {
+                          "size": 3,
+                          "number": 1,
+                          "totalElements": 109,
+                          "totalPages": 37,
+                          "content": [
+                            {
+                              "id": 10003,
+                              "name": "protein4",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            },
+                            {
+                              "id": 10004,
+                              "name": "protein5",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            },
+                            {
+                              "id": 10005,
+                              "name": "protein6",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            }
+                          ]
+                        }""", true));
+
+        caller.page("?page=36&size=3")
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                          "size": 3,
+                          "number": 36,
+                          "totalElements": 109,
+                          "totalPages": 37,
+                          "content": [
+                            {
+                              "id": 10108,
+                              "name": "protein109",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            }
+                          ]
+                        }""", true));
+    }
+
+    @Test
+    void filterByName() {
+        var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request1.name("ABC");
+        caller.create(request1).andExpect(status().isOk());
+
+        var request2 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request2.name("ABCD");
+        caller.create(request2).andExpect(status().isOk());
+
+        var request3 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request3.name("ABCDE");
+        caller.create(request3).andExpect(status().isOk());
+
+        caller.page("?name=BCD&page=0&size=10")
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                          "size": 10,
+                          "number": 0,
+                          "totalElements": 2,
+                          "totalPages": 1,
+                          "content": [
+                            {
+                              "id": 10001,
+                              "name": "ABCD",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            },
+                            {
+                              "id": 10002,
+                              "name": "ABCDE",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            }
+                          ]
+                        }""", true));
+
     }
 
 }
