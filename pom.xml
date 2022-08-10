@@ -17,6 +17,7 @@
 		<java.version>17</java.version>
 		<postgres.driver.version>42.2.23</postgres.driver.version>
 		<postgres.embedded.version>13.7.0</postgres.embedded.version>
+		<spring.boot.version>2.7.2</spring.boot.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -132,6 +133,12 @@
 	</dependencies>
 
 	<build>
+		<finalName>calorie-v2</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -144,6 +151,17 @@
 						</exclude>
 					</excludes>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>spring-boot</classifier>
+							<mainClass>com.home.calories.CaloriesApplication</mainClass>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.openapitools</groupId>
