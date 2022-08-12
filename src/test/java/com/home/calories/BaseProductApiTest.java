@@ -11,8 +11,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.collection.ArrayMatching.arrayContaining;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class BaseProductApiTest extends WithDataBase {
@@ -295,6 +293,64 @@ public class BaseProductApiTest extends WithDataBase {
                           ]
                         }""", true));
 
+    }
+
+    @Test
+    void filterByNameLowercase() {
+        var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request1.name("ABC");
+        caller.create(request1).andExpect(status().isOk());
+
+        caller.page("?name=abc&page=0&size=10")
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                          "size": 10,
+                          "number": 0,
+                          "totalElements": 1,
+                          "totalPages": 1,
+                          "content": [
+                            {
+                              "id": 10000,
+                              "name": "ABC",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            }
+                          ]
+                        }""", true));
+    }
+
+    @Test
+    void filterByNameLowercaseCyrillic() {
+        var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request1.name("АБС");
+        caller.create(request1).andExpect(status().isOk());
+
+        caller.page("?name=абс&page=0&size=10")
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                          "size": 10,
+                          "number": 0,
+                          "totalElements": 1,
+                          "totalPages": 1,
+                          "content": [
+                            {
+                              "id": 10000,
+                              "name": "АБС",
+                              "nutrients": {
+                                "kcal": 150.0,
+                                "proteins": 23.0,
+                                "fats": 4.0,
+                                "carbs": 10.0
+                              }
+                            }
+                          ]
+                        }""", true));
     }
 
     @Test

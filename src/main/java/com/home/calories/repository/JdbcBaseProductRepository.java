@@ -33,7 +33,7 @@ public class JdbcBaseProductRepository implements BaseProductRepository {
             String namePattern = "%" + filter.getName() + "%";
             params.put("namePattern", namePattern);
 
-            String where = " WHERE name like :namePattern";
+            String where = " WHERE name ilike :namePattern";
 
             select += where;
             count += where;
