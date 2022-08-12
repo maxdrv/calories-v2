@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class JdbcBaseProductRepository implements BaseProductRepository {
         params.put("limit", pageable.getPageSize());
         params.put("offset", pageable.getOffset());
 
-        select += " ORDER BY base_product.id LIMIT :limit OFFSET :offset";
+        select += " " + getSort(pageable) + " LIMIT :limit OFFSET :offset";
 
         var baseProducts = jdbcTemplate.query(select, params, this::map);
         return new PageImpl<>(baseProducts, pageable, totalElements);
@@ -111,6 +113,21 @@ public class JdbcBaseProductRepository implements BaseProductRepository {
         }
 
         jdbcTemplate.update("delete from base_product where id = :id", Map.of("id", id));
+    }
+
+    private String getSort(Pageable pageable) {
+        var sortable = Set.of("id", "name");
+
+        var sqlSort = pageable.getSort().stream()
+                .filter(order -> sortable.contains(order.getProperty()))
+                .map(order -> "base_product." + order.getProperty() + " " + order.getDirection().name())
+                .collect(Collectors.joining(", "));
+
+        if (sqlSort.isBlank()) {
+            return "ORDER BY base_product.id ASC";
+        } else {
+            return "ORDER BY " + sqlSort;
+        }
     }
 
     private BaseProduct map(ResultSet rs, int i) throws SQLException {

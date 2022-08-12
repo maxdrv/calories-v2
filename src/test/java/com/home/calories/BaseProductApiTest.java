@@ -10,8 +10,10 @@ import com.home.calories.util.WithDataBase;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.collection.ArrayMatching.arrayContaining;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class BaseProductApiTest extends WithDataBase {
 
@@ -293,6 +295,47 @@ public class BaseProductApiTest extends WithDataBase {
                           ]
                         }""", true));
 
+    }
+
+    @Test
+    void sorting() {
+        var request = Repo.CREATE_PROTEIN_REQUEST.get();
+        request.name(request.getName() + 4);
+        var id = caller.create(request).andExpect(status().isOk()).andReturnAs(BaseProductDto.class).getId();
+        var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request1.name(request1.getName() + 3);
+        var id1 = caller.create(request1).andExpect(status().isOk()).andReturnAs(BaseProductDto.class).getId();;
+        var request2 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request2.name(request2.getName() + 3);
+        var id2 = caller.create(request2).andExpect(status().isOk()).andReturnAs(BaseProductDto.class).getId();;
+        var request3 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request3.name(request3.getName() + 2);
+        var id3 = caller.create(request3).andExpect(status().isOk()).andReturnAs(BaseProductDto.class).getId();
+        var request4 = Repo.CREATE_PROTEIN_REQUEST.get();
+        request4.name(request4.getName() + 1);
+        var id4 = caller.create(request4).andExpect(status().isOk()).andReturnAs(BaseProductDto.class).getId();
+
+        int intId = Math.toIntExact(id);
+        int intId1 = Math.toIntExact(id1);
+        int intId2 = Math.toIntExact(id2);
+        int intId3 = Math.toIntExact(id3);
+        int intId4 = Math.toIntExact(id4);
+
+        caller.page("?page=0&size=5&sort=id,asc")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[*].id").value(contains(intId, intId1, intId2, intId3, intId4)));
+
+        caller.page("?page=0&size=5&sort=id,desc")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId2, intId1, intId)));
+
+        caller.page("?page=0&size=5&sort=name,asc,id,asc")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId1, intId2, intId)));
+
+        caller.page("?page=0&size=5&sort=name,asc,id,desc")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId2, intId1, intId)));
     }
 
 }
