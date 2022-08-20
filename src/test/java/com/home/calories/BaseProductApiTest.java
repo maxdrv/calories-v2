@@ -134,6 +134,21 @@ public class BaseProductApiTest extends WithDataBase {
     }
 
     @Test
+    void emptyPage() {
+        caller.page("?page=0&size=3")
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                          "size": 3,
+                          "number": 0,
+                          "totalElements": 0,
+                          "totalPages": 0,
+                          "content": []
+                        }
+                        """));
+    }
+
+    @Test
     void queryBaseProductPage() {
         for (int i = 1; i < 110; i++) {
             var request = Repo.CREATE_PROTEIN_REQUEST.get();
