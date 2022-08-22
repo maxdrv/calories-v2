@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Component
 public class ApiCaller {
 
+    private static final String SUGGEST_URL = "/api/v1/suggest";
+
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
 
@@ -56,6 +58,15 @@ public class ApiCaller {
         return new SneakyResultActions(
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete("/baseProducts/{baseProductId}", baseProductId)
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions suggest(String name) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        MockMvcRequestBuilders.get(SUGGEST_URL + "?name=" + name)
                 )
         );
     }
