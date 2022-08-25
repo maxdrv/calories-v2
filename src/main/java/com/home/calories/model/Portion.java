@@ -34,7 +34,7 @@ public class Portion implements Nutrients {
     }
 
     private double calc(double amountPer100g) {
-        if (this.grams == 0) {
+        if (this.grams == 0 || amountPer100g == 0) {
             return 0;
         }
         return amountPer100g * this.grams / 100;
