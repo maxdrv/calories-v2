@@ -17,7 +17,7 @@ import static com.home.calories.util.PageableUtil.MAX_SIZE_PAGE;
 
 @Component
 @RequiredArgsConstructor
-public class SuggestApiDelegateImpl implements ApiApiDelegate {
+public class ApiDelegateImpl implements ApiApiDelegate {
 
     private final BaseProductService baseProductService;
     private final DishService dishService;
@@ -41,7 +41,7 @@ public class SuggestApiDelegateImpl implements ApiApiDelegate {
 
     private static SuggestDto map(PageOfBaseProductDto page) {
         var entities = StreamEx.of(page.getContent())
-                .map(SuggestApiDelegateImpl::map)
+                .map(ApiDelegateImpl::map)
                 .toList();
 
         var suggest = new SuggestDto();
