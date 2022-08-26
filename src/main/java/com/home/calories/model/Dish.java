@@ -18,7 +18,7 @@ public class Dish implements Nutrients {
 
     @Override
     public double getKcal() {
-        return calc(Portion::getProteins);
+        return calc(Portion::getKcal);
     }
 
     @Override
