@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PageableUtil {
 
-    public static final String SORT_ATTRIBUTE_ID_ASC = "id,asc";
+    public static Pageable MAX_SIZE_PAGE = PageRequest.of(0, Integer.MAX_VALUE, Sort.by("id"));
 
     private PageableUtil() {
         throw new UnsupportedOperationException();

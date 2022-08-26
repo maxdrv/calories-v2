@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class BaseProductFilter {
+public class DishFilter {
 
     private final String name;
 

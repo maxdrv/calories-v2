@@ -7,9 +7,8 @@ import com.home.calories.openapi.model.PageOfBaseProductDto;
 import com.home.calories.openapi.model.UpdateBaseProductRequest;
 import com.home.calories.repository.BaseProductFilter;
 import com.home.calories.service.BaseProductService;
-import com.home.calories.util.PageableUtil;
+import com.home.calories.util.PageableBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -27,17 +26,8 @@ public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
             Integer size,
             @Nullable String sort
     ) {
-        var sortLiteral = sort == null ? "id,asc" : sort;
-        var pageRequest = PageRequest.of(
-                page,
-                size,
-                PageableUtil.parseParameterIntoSort(sortLiteral)
-        );
-
-        var filter = new BaseProductFilter();
-        filter.setName(name);
-
-        return ResponseEntity.ok(baseProductService.page(filter, pageRequest));
+        var pageable = PageableBuilder.of(page, size).sortOrIdAsc(sort).build();
+        return ResponseEntity.ok(baseProductService.page(new BaseProductFilter(name), pageable));
     }
 
 

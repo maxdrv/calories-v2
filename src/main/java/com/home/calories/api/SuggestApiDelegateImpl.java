@@ -1,33 +1,41 @@
 package com.home.calories.api;
 
 import com.home.calories.openapi.api.ApiApiDelegate;
-import com.home.calories.openapi.model.BaseProductDto;
-import com.home.calories.openapi.model.EntityDto;
-import com.home.calories.openapi.model.PageOfBaseProductDto;
-import com.home.calories.openapi.model.SuggestDto;
+import com.home.calories.openapi.model.*;
 import com.home.calories.repository.BaseProductFilter;
+import com.home.calories.repository.DishFilter;
 import com.home.calories.service.BaseProductService;
+import com.home.calories.service.DishService;
+import com.home.calories.util.PageableBuilder;
 import lombok.RequiredArgsConstructor;
 import one.util.streamex.StreamEx;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+
+import static com.home.calories.util.PageableUtil.MAX_SIZE_PAGE;
 
 @Component
 @RequiredArgsConstructor
 public class SuggestApiDelegateImpl implements ApiApiDelegate {
 
     private final BaseProductService baseProductService;
+    private final DishService dishService;
+
+    @Override
+    public ResponseEntity<PageOfDishDto> pageDishes(
+            String name,
+            Integer page,
+            Integer size,
+            @Nullable String sort
+    ) {
+        var pageable = PageableBuilder.of(page, size).sortOrIdAsc(sort).build();
+        return ResponseEntity.ok(dishService.page(new DishFilter(name), pageable));
+    }
 
     @Override
     public ResponseEntity<SuggestDto> suggestEntityByName(String name) {
-        var pageRequest = PageRequest.of(0, Integer.MAX_VALUE, Sort.by("id"));
-
-        var filter = new BaseProductFilter();
-        filter.setName(name);
-
-        var page =baseProductService.page(filter, pageRequest);
+        var page = baseProductService.page(new BaseProductFilter(name), MAX_SIZE_PAGE);
         return ResponseEntity.ok(map(page));
     }
 
