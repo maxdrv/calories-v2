@@ -43,12 +43,56 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
     public Page<Dish> find(DishFilter filter, Pageable pageable) {
         Page<Long> dishIdsPage = findIds(filter, pageable);
         List<Long> dishIds = dishIdsPage.getContent();
+        Map<Long, Dish> dishMap = findByIds(dishIds);
+        return dishIdsPage.map(dishMap::get);
+    }
 
+    @Override
+    public Page<Long> findIds(DishFilter filter, Pageable pageable) {
+        String select = "SELECT id FROM " + table();
+        String count = "SELECT count(*) FROM " + table();
+
+        Map<String, Object> params = new HashMap<>();
+
+        if (filter.getName() != null) {
+            String namePattern = "%" + filter.getName() + "%";
+            params.put("namePattern", namePattern);
+
+            String where = " WHERE name ilike :namePattern";
+
+            select += where;
+            count += where;
+        }
+
+        Integer totalElements = jdbcTemplate.queryForObject(count, params, Integer.class);
+
+        params.put("limit", pageable.getPageSize());
+        params.put("offset", pageable.getOffset());
+
+        select += " " + getSort(pageable) + " LIMIT :limit OFFSET :offset";
+
+        List<Long> ids = jdbcTemplate.queryForList(select, params, Long.class);
+
+        return new PageImpl<>(ids, pageable, totalElements);
+    }
+
+    @Override
+    public Optional<Dish> findById(Long id) {
+        var map = findByIds(List.of(id));
+        if (map.isEmpty()) {
+            return Optional.empty();
+        } else if (map.size() == 1) {
+            return map.values().stream().findFirst();
+        }
+        throw new IllegalStateException("query for single entity return several " + map.size());
+    }
+
+    private Map<Long, Dish> findByIds(List<Long> ids) {
         List<FlatDishProjection> flatDishProjection;
-        if (dishIds.isEmpty()) {
+        if (ids.isEmpty()) {
             flatDishProjection = new ArrayList<>();
         } else {
-            flatDishProjection = jdbcTemplate.query(QUERY_DISHES_BY_IDS, Map.of("dishIds", dishIds), this::map);
+            flatDishProjection = jdbcTemplate.query(QUERY_DISHES_BY_IDS, Map.of("dishIds", ids), this::map);
         }
 
         Map<Long, Dish> dishMap = new HashMap<>();
@@ -79,36 +123,7 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
                 dishMap.get(proj.dishId).getPortions().add(portion);
             }
         }
-
-        return dishIdsPage.map(dishMap::get);
-    }
-
-    public Page<Long> findIds(DishFilter filter, Pageable pageable) {
-        String select = "SELECT id FROM " + table();
-        String count = "SELECT count(*) FROM " + table();
-
-        Map<String, Object> params = new HashMap<>();
-
-        if (filter.getName() != null) {
-            String namePattern = "%" + filter.getName() + "%";
-            params.put("namePattern", namePattern);
-
-            String where = " WHERE name ilike :namePattern";
-
-            select += where;
-            count += where;
-        }
-
-        Integer totalElements = jdbcTemplate.queryForObject(count, params, Integer.class);
-
-        params.put("limit", pageable.getPageSize());
-        params.put("offset", pageable.getOffset());
-
-        select += " " + getSort(pageable) + " LIMIT :limit OFFSET :offset";
-
-        List<Long> ids = jdbcTemplate.queryForList(select, params, Long.class);
-
-        return new PageImpl<>(ids, pageable, totalElements);
+        return dishMap;
     }
 
     @Override

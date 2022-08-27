@@ -2,6 +2,8 @@ package com.home.calories.service;
 
 import com.home.calories.mapper.DishMapper;
 import com.home.calories.model.Dish;
+import com.home.calories.openapi.model.BaseProductDto;
+import com.home.calories.openapi.model.DishDto;
 import com.home.calories.openapi.model.PageOfDishDto;
 import com.home.calories.repository.DishFilter;
 import com.home.calories.repository.DishRepository;
@@ -25,6 +27,12 @@ public class DishService {
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .content(page.getContent().stream().map(dishMapper::map).toList());
+    }
+
+    public DishDto findByIdOrThrow(Long id) {
+        return dishRepository.findById(id)
+                .map(dishMapper::map)
+                .orElseThrow(() -> new IllegalArgumentException("Dish does not exists " + id));
     }
 
 }
