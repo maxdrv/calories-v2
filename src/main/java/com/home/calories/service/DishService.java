@@ -2,7 +2,6 @@ package com.home.calories.service;
 
 import com.home.calories.mapper.DishMapper;
 import com.home.calories.model.Dish;
-import com.home.calories.openapi.model.BaseProductDto;
 import com.home.calories.openapi.model.DishDto;
 import com.home.calories.openapi.model.PageOfDishDto;
 import com.home.calories.repository.DishFilter;
