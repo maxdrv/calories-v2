@@ -31,7 +31,6 @@ public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
         return ResponseEntity.ok(baseProductService.page(new BaseProductFilter(name), pageable));
     }
 
-
     @Override
     public ResponseEntity<BaseProductDto> baseProductById(Long baseProductId) {
         return ResponseEntity.ok(baseProductService.findByIdOrThrow(baseProductId));
@@ -52,4 +51,5 @@ public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
         baseProductService.delete(baseProductId);
         return ResponseEntity.ok().build();
     }
+
 }

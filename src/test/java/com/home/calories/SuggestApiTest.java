@@ -15,15 +15,15 @@ public class SuggestApiTest extends WithDataBase {
     void suggestBaseProductByName() {
         var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
         request1.name("ABC");
-        caller.create(request1).andExpect(status().isOk());
+        caller.create(request1).andExpect(status().isCreated());
 
         var request2 = Repo.CREATE_PROTEIN_REQUEST.get();
         request2.name("ABCD");
-        caller.create(request2).andExpect(status().isOk());
+        caller.create(request2).andExpect(status().isCreated());
 
         var request3 = Repo.CREATE_PROTEIN_REQUEST.get();
         request3.name("ABCDE");
-        caller.create(request3).andExpect(status().isOk());
+        caller.create(request3).andExpect(status().isCreated());
 
         caller.suggest("BCD", EntityTypeDto.BASE_PRODUCT)
                 .andExpect(status().isOk())
