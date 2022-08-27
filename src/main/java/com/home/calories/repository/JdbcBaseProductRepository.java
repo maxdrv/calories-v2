@@ -1,7 +1,6 @@
 package com.home.calories.repository;
 
 import com.home.calories.model.BaseProduct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +16,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-@RequiredArgsConstructor
-public class JdbcBaseProductRepository implements BaseProductRepository {
+public class JdbcBaseProductRepository extends JdbcRepository implements BaseProductRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    public JdbcBaseProductRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
+    }
 
     @Override
     public Page<BaseProduct> find(BaseProductFilter filter, Pageable pageable) {
@@ -116,11 +116,9 @@ public class JdbcBaseProductRepository implements BaseProductRepository {
     }
 
     private String getSort(Pageable pageable) {
-        var sortable = Set.of("id", "name");
-
         var sqlSort = pageable.getSort().stream()
-                .filter(order -> sortable.contains(order.getProperty()))
-                .map(order -> "base_product." + order.getProperty() + " " + order.getDirection().name())
+                .filter(order -> sortableColumns().contains(order.getProperty()))
+                .map(order -> table() + "." + order.getProperty() + " " + order.getDirection().name())
                 .collect(Collectors.joining(", "));
 
         if (sqlSort.isBlank()) {
@@ -139,5 +137,15 @@ public class JdbcBaseProductRepository implements BaseProductRepository {
                 rs.getDouble("fats"),
                 rs.getDouble("carbs")
         );
+    }
+
+    @Override
+    protected String table() {
+        return "base_product";
+    }
+
+    @Override
+    protected Set<String> sortableColumns() {
+        return Set.of("id", "name");
     }
 }
