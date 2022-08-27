@@ -2,6 +2,7 @@ package com.home.calories.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.calories.openapi.model.CreateBaseProductRequest;
+import com.home.calories.openapi.model.EntityTypeDto;
 import com.home.calories.openapi.model.UpdateBaseProductRequest;
 import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
@@ -64,10 +65,10 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions suggest(String name) {
+    public SneakyResultActions suggest(String name, EntityTypeDto type) {
         return new SneakyResultActions(
                 mockMvc.perform(
-                        MockMvcRequestBuilders.get(SUGGEST_URL + "?name=" + name)
+                        MockMvcRequestBuilders.get(SUGGEST_URL + "?name=" + name + "&type=" + type.name())
                 )
         );
     }

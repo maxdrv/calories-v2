@@ -1,5 +1,6 @@
 package com.home.calories;
 
+import com.home.calories.openapi.model.EntityTypeDto;
 import com.home.calories.util.Repo;
 import com.home.calories.util.WithDataBase;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,7 @@ public class SuggestApiTest extends WithDataBase {
         request3.name("ABCDE");
         caller.create(request3).andExpect(status().isOk());
 
-
-        caller.suggest("BCD")
+        caller.suggest("BCD", EntityTypeDto.BASE_PRODUCT)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -34,6 +34,12 @@ public class SuggestApiTest extends WithDataBase {
                             ]
                         }
                         """));
+    }
+
+    @Test
+    void suggestDishByName() {
+        caller.suggest("", EntityTypeDto.DISH)
+                .andExpect(status().isOk());
     }
 
 }

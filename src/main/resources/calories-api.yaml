@@ -166,16 +166,22 @@ paths:
   /api/v1/suggest:
     get:
       summary: get entity by string representation
-      operationId: suggestEntityByName
+      operationId: suggestEntity
       tags:
         - suggest
       parameters:
         - name: name
           in: query
-          description: filter entity by string representation
+          description: filter entity of type by string representation
           required: true
           schema:
             type: string
+        - name: type
+          in: query
+          description: type of entity for search
+          required: true
+          schema:
+            $ref: "#/components/schemas/EntityTypeDto"
       responses:
         '200':
           description: suggest
@@ -322,4 +328,11 @@ components:
           format: int64
         name:
           type: string
+        type:
+          $ref: "#/components/schemas/EntityTypeDto"
+    EntityTypeDto:
+      type: string
+      enum:
+        - BASE_PRODUCT
+        - DISH
 

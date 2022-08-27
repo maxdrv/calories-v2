@@ -2,7 +2,9 @@ package com.home.calories.repository;
 
 import com.home.calories.model.BaseProduct;
 import com.home.calories.model.Dish;
+import com.home.calories.model.DishIdentity;
 import com.home.calories.model.Portion;
+import one.util.streamex.StreamEx;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 
 @Repository
 public class JdbcDishRepositoryImpl extends JdbcRepository implements DishRepository {
@@ -32,6 +35,14 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
                     left join dish_portion_mapping dpm on dpm.dish_id = dish.id
                     join portion on portion.id = dpm.portion_id
                     join base_product bp on bp.id = portion.base_product_id
+                where dish.id in (:dishIds)
+            """;
+
+    private static final String QUERY_DISH_IDENTITIES_BY_ID = """
+                select
+                    dish.id   id,
+                    dish.name name
+                from dish
                 where dish.id in (:dishIds)
             """;
 
@@ -74,6 +85,14 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
         List<Long> ids = jdbcTemplate.queryForList(select, params, Long.class);
 
         return new PageImpl<>(ids, pageable, totalElements);
+    }
+
+    @Override
+    public Page<DishIdentity> findIdentities(DishFilter filter, Pageable pageable) {
+        Page<Long> dishIdsPage = findIds(filter, pageable);
+        List<Long> dishIds = dishIdsPage.getContent();
+        Map<Long, DishIdentity> dishMap = findIdentities(dishIds);
+        return dishIdsPage.map(dishMap::get);
     }
 
     @Override
@@ -126,6 +145,18 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
         return dishMap;
     }
 
+    private Map<Long, DishIdentity> findIdentities(List<Long> ids) {
+        List<DishIdentity> identities;
+        if (ids.isEmpty()) {
+            identities = new ArrayList<>();
+        } else {
+            identities = jdbcTemplate.query(QUERY_DISH_IDENTITIES_BY_ID, Map.of("dishIds", ids), this::mapToIdentity);
+        }
+        return StreamEx.of(identities)
+                .mapToEntry(DishIdentity::id, Function.identity())
+                .toMap();
+    }
+
     @Override
     protected String table() {
         return "dish";
@@ -148,6 +179,13 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
                 rs.getDouble("base_product_proteins"),
                 rs.getDouble("base_product_fats"),
                 rs.getDouble("base_product_carbs")
+        );
+    }
+
+    private DishIdentity mapToIdentity(ResultSet rs, int i) throws SQLException {
+        return new DishIdentity(
+                rs.getLong("id"),
+                rs.getString("name")
         );
     }
 
