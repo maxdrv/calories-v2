@@ -44,6 +44,7 @@ public class SuggestService {
         var entity = new EntityDto();
         entity.setId(input.getId());
         entity.setName(input.getName());
+        entity.setType(EntityTypeDto.BASE_PRODUCT);
         return entity;
     }
 
@@ -63,6 +64,7 @@ public class SuggestService {
         var entity = new EntityDto();
         entity.setId(input.id());
         entity.setName(input.name());
+        entity.setType(EntityTypeDto.DISH);
         return entity;
     }
 }

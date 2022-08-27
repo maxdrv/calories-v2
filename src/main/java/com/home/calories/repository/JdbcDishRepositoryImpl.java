@@ -30,19 +30,11 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
                     bp.kcal       base_product_kcal,
                     bp.proteins   base_product_proteins,
                     bp.fats       base_product_fats,
-                    bp.carbs      base_product_carbs,
+                    bp.carbs      base_product_carbs
                 from dish
                     left join dish_portion_mapping dpm on dpm.dish_id = dish.id
                     join portion on portion.id = dpm.portion_id
                     join base_product bp on bp.id = portion.base_product_id
-                where dish.id in (:dishIds)
-            """;
-
-    private static final String QUERY_DISH_IDENTITIES_BY_ID = """
-                select
-                    dish.id   id,
-                    dish.name name
-                from dish
                 where dish.id in (:dishIds)
             """;
 
@@ -150,7 +142,11 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
         if (ids.isEmpty()) {
             identities = new ArrayList<>();
         } else {
-            identities = jdbcTemplate.query(QUERY_DISH_IDENTITIES_BY_ID, Map.of("dishIds", ids), this::mapToIdentity);
+            identities = jdbcTemplate.query(
+                    "select * from dish where dish.id in (:dishIds)",
+                    Map.of("dishIds", ids),
+                    this::mapToIdentity
+            );
         }
         return StreamEx.of(identities)
                 .mapToEntry(DishIdentity::id, Function.identity())

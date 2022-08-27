@@ -1,0 +1,14 @@
+<dataset>
+
+    <base_product id="1" name="protein" kcal="150" proteins="23" fats="4" carbs="10"/>
+    <base_product id="2" name="milk" kcal="11" proteins="14" fats="13" carbs="12"/>
+
+    <portion id="1" grams="30" base_product_id="1" />
+    <portion id="2" grams="400" base_product_id="2" />
+
+    <dish id="1" name="protein 400ml"/>
+
+    <dish_portion_mapping dish_id="1" portion_id="1"/>
+    <dish_portion_mapping dish_id="1" portion_id="2"/>
+
+</dataset>

@@ -1,5 +1,6 @@
 package com.home.calories;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.home.calories.openapi.model.EntityTypeDto;
 import com.home.calories.util.Repo;
 import com.home.calories.util.WithDataBase;
@@ -29,17 +30,25 @@ public class SuggestApiTest extends WithDataBase {
                 .andExpect(content().json("""
                         {
                             "content": [
-                                { "id": 10001, "name": "ABCD" },
-                                { "id": 10002, "name": "ABCDE" }
+                                { "id": 10001, type: "BASE_PRODUCT", "name": "ABCD" },
+                                { "id": 10002, type: "BASE_PRODUCT", "name": "ABCDE" }
                             ]
                         }
                         """));
     }
 
+    @DatabaseSetup("/repository/dish/before/demo_dish.xml")
     @Test
     void suggestDishByName() {
-        caller.suggest("", EntityTypeDto.DISH)
-                .andExpect(status().isOk());
+        caller.suggest("pro", EntityTypeDto.DISH)
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "content": [
+                                { "id": 1, type: "DISH", "name": "protein 400ml" }
+                            ]
+                        }
+                        """));
     }
 
 }
