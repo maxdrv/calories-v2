@@ -162,7 +162,171 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PageOfDishDto"
-
+    post:
+      summary: create dish
+      operationId: createDish
+      tags:
+        - dish
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDishDto"
+      responses:
+        '201':
+          description: created dish
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishDto"
+  /api/v1/dish/{dishId}:
+    get:
+      summary: get dish by id
+      operationId: findDishById
+      tags:
+        - dish
+      parameters:
+        - name: dishId
+          in: path
+          required: true
+          description: The id of the dish to update
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: dish
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishDto"
+    put:
+      summary: update dish
+      operationId: updateDish
+      tags:
+        - dish
+      parameters:
+        - name: dishId
+          in: path
+          required: true
+          description: The id of the dish to update
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDishDto"
+      responses:
+        '200':
+          description: updated dish
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishDto"
+    delete:
+      summary: delete dish
+      operationId: deleteDish
+      tags:
+        - dish
+      parameters:
+        - name: dishId
+          in: path
+          required: true
+          description: The id of the dish to delete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: dish deleted successfully
+  /api/v1/dish/{dishId}/portion:
+    post:
+      summary: add portion to dish
+      operationId: createPortion
+      tags:
+        - dish
+      parameters:
+        - name: dishId
+          in: path
+          required: true
+          description: The id of the dish to which portion belong
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePortionDto"
+      responses:
+        '201':
+          description: created portion
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortionDto"
+  /api/v1/dish/{dishId}/portion/{portionId}:
+    put:
+      summary: updated portion
+      operationId: updatePortion
+      tags:
+        - dish
+      parameters:
+        - name: dishId
+          in: path
+          required: true
+          description: The id of the dish to which portion belong
+          schema:
+            type: integer
+            format: int64
+        - name: portionId
+          in: path
+          required: true
+          description: The id of the portion to update
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePortionDto"
+      responses:
+        '200':
+          description: updated dish
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortionDto"
+    delete:
+      summary: delete portion
+      operationId: deletePortion
+      tags:
+        - dish
+      parameters:
+        - name: dishId
+          in: path
+          required: true
+          description: The id of the dish to which portion belong
+          schema:
+            type: integer
+            format: int64
+        - name: portionId
+          in: path
+          required: true
+          description: The id of the portion to delete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: portion deleted successfully
   /api/v1/suggest:
     get:
       summary: get entity by string representation
@@ -308,6 +472,46 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DishDto"
+    CreatePortionDto:
+      type: object
+      required:
+        - grams
+        - baseProductId
+      properties:
+        grams:
+          type: integer
+        baseProductId:
+          type: integer
+          format: int64
+    UpdatePortionDto:
+      type: object
+      required:
+        - grams
+        - baseProductId
+      properties:
+        grams:
+          type: integer
+        baseProductId:
+          type: integer
+          format: int64
+    CreateDishDto:
+      type: object
+      required:
+        - name
+        - portions
+      properties:
+        name:
+          type: string
+        portions:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreatePortionDto"
+    UpdateDishDto:
+      required:
+        - name
+      properties:
+        name:
+          type: string
     SuggestDto:
       type: object
       required:
@@ -335,4 +539,3 @@ components:
       enum:
         - BASE_PRODUCT
         - DISH
-

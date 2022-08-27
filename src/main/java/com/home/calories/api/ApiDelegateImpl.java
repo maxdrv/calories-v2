@@ -1,9 +1,7 @@
 package com.home.calories.api;
 
 import com.home.calories.openapi.api.ApiApiDelegate;
-import com.home.calories.openapi.model.EntityTypeDto;
-import com.home.calories.openapi.model.PageOfDishDto;
-import com.home.calories.openapi.model.SuggestDto;
+import com.home.calories.openapi.model.*;
 import com.home.calories.repository.DishFilter;
 import com.home.calories.service.DishService;
 import com.home.calories.service.SuggestService;
@@ -29,6 +27,41 @@ public class ApiDelegateImpl implements ApiApiDelegate {
     ) {
         var pageable = PageableBuilder.of(page, size).sortOrIdAsc(sort).build();
         return ResponseEntity.ok(dishService.page(new DishFilter(name), pageable));
+    }
+
+    @Override
+    public ResponseEntity<DishDto> findDishById(Long dishId) {
+        return ApiApiDelegate.super.findDishById(dishId);
+    }
+
+    @Override
+    public ResponseEntity<DishDto> createDish(CreateDishDto createDishDto) {
+        return ApiApiDelegate.super.createDish(createDishDto);
+    }
+
+    @Override
+    public ResponseEntity<DishDto> updateDish(Long dishId, UpdateDishDto updateDishDto) {
+        return ApiApiDelegate.super.updateDish(dishId, updateDishDto);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteDish(Long dishId) {
+        return ApiApiDelegate.super.deleteDish(dishId);
+    }
+
+    @Override
+    public ResponseEntity<PortionDto> createPortion(Long dishId, CreatePortionDto createPortionDto) {
+        return ApiApiDelegate.super.createPortion(dishId, createPortionDto);
+    }
+
+    @Override
+    public ResponseEntity<PortionDto> updatePortion(Long dishId, Long portionId, UpdatePortionDto updatePortionDto) {
+        return ApiApiDelegate.super.updatePortion(dishId, portionId, updatePortionDto);
+    }
+
+    @Override
+    public ResponseEntity<Void> deletePortion(Long dishId, Long portionId) {
+        return ApiApiDelegate.super.deletePortion(dishId, portionId);
     }
 
     @Override
