@@ -2,8 +2,7 @@ package com.home.calories.service;
 
 import com.home.calories.mapper.DishMapper;
 import com.home.calories.model.Dish;
-import com.home.calories.openapi.model.DishDto;
-import com.home.calories.openapi.model.PageOfDishDto;
+import com.home.calories.openapi.model.*;
 import com.home.calories.repository.DishFilter;
 import com.home.calories.repository.DishRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,4 +33,27 @@ public class DishService {
                 .orElseThrow(() -> new IllegalArgumentException("Dish does not exists " + id));
     }
 
+    public DishDto createDish(CreateDishDto createDishDto) {
+        return null;
+    }
+
+    public DishDto updateDish(Long dishId, UpdateDishDto updateDishDto) {
+        return null;
+    }
+
+    public void deleteDish(Long dishId) {
+
+    }
+
+    public PortionDto createPortion(Long dishId, CreatePortionDto createPortionDto) {
+        return null;
+    }
+
+    public PortionDto updatePortion(Long dishId, Long portionId, UpdatePortionDto updatePortionDto) {
+        return null;
+    }
+
+    public void deletePortion(Long dishId, Long portionId) {
+
+    }
 }

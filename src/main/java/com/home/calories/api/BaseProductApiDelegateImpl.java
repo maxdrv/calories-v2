@@ -9,6 +9,7 @@ import com.home.calories.repository.BaseProductFilter;
 import com.home.calories.service.BaseProductService;
 import com.home.calories.util.PageableBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class BaseProductApiDelegateImpl implements BaseProductsApiDelegate {
 
     @Override
     public ResponseEntity<BaseProductDto> createBaseProduct(CreateBaseProductRequest request) {
-        return ResponseEntity.ok(baseProductService.create(request));
+        return new ResponseEntity<>(baseProductService.create(request), HttpStatus.CREATED);
     }
 
     @Override

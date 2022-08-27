@@ -7,6 +7,7 @@ import com.home.calories.service.DishService;
 import com.home.calories.service.SuggestService;
 import com.home.calories.util.PageableBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -31,37 +32,39 @@ public class ApiDelegateImpl implements ApiApiDelegate {
 
     @Override
     public ResponseEntity<DishDto> findDishById(Long dishId) {
-        return ApiApiDelegate.super.findDishById(dishId);
+        return ResponseEntity.ok(dishService.findByIdOrThrow(dishId));
     }
 
     @Override
     public ResponseEntity<DishDto> createDish(CreateDishDto createDishDto) {
-        return ApiApiDelegate.super.createDish(createDishDto);
+        return new ResponseEntity<>(dishService.createDish(createDishDto), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<DishDto> updateDish(Long dishId, UpdateDishDto updateDishDto) {
-        return ApiApiDelegate.super.updateDish(dishId, updateDishDto);
+        return ResponseEntity.ok(dishService.updateDish(dishId, updateDishDto));
     }
 
     @Override
     public ResponseEntity<Void> deleteDish(Long dishId) {
-        return ApiApiDelegate.super.deleteDish(dishId);
+        dishService.deleteDish(dishId);
+        return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<PortionDto> createPortion(Long dishId, CreatePortionDto createPortionDto) {
-        return ApiApiDelegate.super.createPortion(dishId, createPortionDto);
+        return new ResponseEntity<>(dishService.createPortion(dishId, createPortionDto), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<PortionDto> updatePortion(Long dishId, Long portionId, UpdatePortionDto updatePortionDto) {
-        return ApiApiDelegate.super.updatePortion(dishId, portionId, updatePortionDto);
+        return ResponseEntity.ok(dishService.updatePortion(dishId, portionId, updatePortionDto));
     }
 
     @Override
     public ResponseEntity<Void> deletePortion(Long dishId, Long portionId) {
-        return ApiApiDelegate.super.deletePortion(dishId, portionId);
+        dishService.deletePortion(dishId, portionId);
+        return ResponseEntity.ok().build();
     }
 
     @Override
