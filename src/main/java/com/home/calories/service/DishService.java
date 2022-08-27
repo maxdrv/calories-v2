@@ -1,6 +1,6 @@
 package com.home.calories.service;
 
-import com.home.calories.mapper.GodlikeMapper;
+import com.home.calories.mapper.DishMapper;
 import com.home.calories.model.BaseProduct;
 import com.home.calories.model.Dish;
 import com.home.calories.model.Portion;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DishService {
 
-    private final GodlikeMapper mapper;
+    private final DishMapper dishMapper;
 
     public PageOfDishDto page(DishFilter filter, Pageable pageable) {
         // stub
@@ -52,7 +52,7 @@ public class DishService {
                 .number(page.getNumber())
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
-                .content(page.getContent().stream().map(mapper::map).toList());
+                .content(page.getContent().stream().map(dishMapper::map).toList());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.home.calories.service;
 
-import com.home.calories.mapper.GodlikeMapper;
+import com.home.calories.mapper.BaseProductMapper;
 import com.home.calories.model.BaseProduct;
 import com.home.calories.openapi.model.BaseProductDto;
 import com.home.calories.openapi.model.CreateBaseProductRequest;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class BaseProductService {
 
     private final BaseProductRepository baseProductRepository;
-    private final GodlikeMapper mapper;
+    private final BaseProductMapper baseProductMapper;
 
     public PageOfBaseProductDto page(BaseProductFilter filter, Pageable pageable) {
         Page<BaseProduct> page = baseProductRepository.find(filter, pageable);
@@ -27,23 +27,23 @@ public class BaseProductService {
                 .number(page.getNumber())
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
-                .content(page.getContent().stream().map(mapper::map).toList());
+                .content(page.getContent().stream().map(baseProductMapper::map).toList());
     }
 
     public BaseProductDto findByIdOrThrow(Long id) {
         return baseProductRepository.findById(id)
-                .map(mapper::map)
+                .map(baseProductMapper::map)
                 .orElseThrow(() -> new IllegalArgumentException("Product does not exists " + id));
     }
 
     public BaseProductDto create(CreateBaseProductRequest request) {
         var created = baseProductRepository.insert(map(request));
-        return mapper.map(created);
+        return baseProductMapper.map(created);
     }
 
     public BaseProductDto update(Long baseProductId, UpdateBaseProductRequest request) {
         var created = baseProductRepository.update(map(baseProductId, request));
-        return mapper.map(created);
+        return baseProductMapper.map(created);
     }
 
     public void delete(Long baseProductId) {
