@@ -135,7 +135,7 @@ public class BaseProductApiTest extends WithDataBase {
 
     @Test
     void emptyPage() {
-        caller.page("?page=0&size=3")
+        caller.pageOfProducts("?page=0&size=3")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -156,7 +156,7 @@ public class BaseProductApiTest extends WithDataBase {
             caller.create(request).andExpect(status().isOk());
         }
 
-        caller.page("?page=0&size=3")
+        caller.pageOfProducts("?page=0&size=3")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -198,7 +198,7 @@ public class BaseProductApiTest extends WithDataBase {
                           ]
                         }""", true));
 
-        caller.page("?page=1&size=3")
+        caller.pageOfProducts("?page=1&size=3")
                 .andExpect(content().json("""
                         {
                           "size": 3,
@@ -239,7 +239,7 @@ public class BaseProductApiTest extends WithDataBase {
                           ]
                         }""", true));
 
-        caller.page("?page=36&size=3")
+        caller.pageOfProducts("?page=36&size=3")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -276,7 +276,7 @@ public class BaseProductApiTest extends WithDataBase {
         request3.name("ABCDE");
         caller.create(request3).andExpect(status().isOk());
 
-        caller.page("?name=BCD&page=0&size=10")
+        caller.pageOfProducts("?name=BCD&page=0&size=10")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -316,7 +316,7 @@ public class BaseProductApiTest extends WithDataBase {
         request1.name("ABC");
         caller.create(request1).andExpect(status().isOk());
 
-        caller.page("?name=abc&page=0&size=10")
+        caller.pageOfProducts("?name=abc&page=0&size=10")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -345,7 +345,7 @@ public class BaseProductApiTest extends WithDataBase {
         request1.name("АБС");
         caller.create(request1).andExpect(status().isOk());
 
-        caller.page("?name=абс&page=0&size=10")
+        caller.pageOfProducts("?name=абс&page=0&size=10")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -392,19 +392,19 @@ public class BaseProductApiTest extends WithDataBase {
         int intId3 = Math.toIntExact(id3);
         int intId4 = Math.toIntExact(id4);
 
-        caller.page("?page=0&size=5&sort=id,asc")
+        caller.pageOfProducts("?page=0&size=5&sort=id,asc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId, intId1, intId2, intId3, intId4)));
 
-        caller.page("?page=0&size=5&sort=id,desc")
+        caller.pageOfProducts("?page=0&size=5&sort=id,desc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId2, intId1, intId)));
 
-        caller.page("?page=0&size=5&sort=name,asc,id,asc")
+        caller.pageOfProducts("?page=0&size=5&sort=name,asc,id,asc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId1, intId2, intId)));
 
-        caller.page("?page=0&size=5&sort=name,asc,id,desc")
+        caller.pageOfProducts("?page=0&size=5&sort=name,asc,id,desc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId2, intId1, intId)));
     }

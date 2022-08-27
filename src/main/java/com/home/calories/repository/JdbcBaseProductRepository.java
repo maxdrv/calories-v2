@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcBaseProductRepository extends JdbcRepository implements BaseProductRepository {
@@ -113,19 +112,6 @@ public class JdbcBaseProductRepository extends JdbcRepository implements BasePro
         }
 
         jdbcTemplate.update("delete from base_product where id = :id", Map.of("id", id));
-    }
-
-    private String getSort(Pageable pageable) {
-        var sqlSort = pageable.getSort().stream()
-                .filter(order -> sortableColumns().contains(order.getProperty()))
-                .map(order -> table() + "." + order.getProperty() + " " + order.getDirection().name())
-                .collect(Collectors.joining(", "));
-
-        if (sqlSort.isBlank()) {
-            return "ORDER BY base_product.id ASC";
-        } else {
-            return "ORDER BY " + sqlSort;
-        }
     }
 
     private BaseProduct map(ResultSet rs, int i) throws SQLException {

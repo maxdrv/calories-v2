@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Component
 public class ApiCaller {
 
+    private static final String DISH_URL = "/api/v1/dish";
     private static final String SUGGEST_URL = "/api/v1/suggest";
 
     private final MockMvc mockMvc;
@@ -25,7 +26,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions page(String params) {
+    public SneakyResultActions pageOfProducts(String params) {
         return new SneakyResultActions(
                 mockMvc.perform(get("/baseProducts" + params))
         );
@@ -68,6 +69,13 @@ public class ApiCaller {
                 mockMvc.perform(
                         MockMvcRequestBuilders.get(SUGGEST_URL + "?name=" + name)
                 )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions pageOfDishes(String params) {
+        return new SneakyResultActions(
+                mockMvc.perform(get(DISH_URL + params))
         );
     }
 
