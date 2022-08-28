@@ -152,6 +152,27 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
         jdbcTemplate.batchUpdate(sql, sqlParameterSourceArray);
     }
 
+    @Override
+    public void deleteDish(Long dishId) {
+        if (dishId == null) {
+            throw new RuntimeException("id should be not null");
+        }
+
+        String selectPortionsToDeleteSql = "select portion_id from dish_portion_mapping where dish_id=:dishId";
+        String deleteMappingsSql = "delete from dish_portion_mapping where dish_id=:dishId";
+        String deletePortionsSql = "delete from portion where id in (:portionIds)";
+        String deleteDishSql = "delete from dish where id=:dishId";
+
+        List<Long> portionIds = jdbcTemplate.queryForList(selectPortionsToDeleteSql, Map.of("dishId", dishId), Long.class);
+
+        if (!portionIds.isEmpty()) {
+            jdbcTemplate.update(deleteMappingsSql, Map.of("dishId", dishId));
+            jdbcTemplate.update(deletePortionsSql, Map.of("portionIds", portionIds));
+        }
+
+        jdbcTemplate.update(deleteDishSql, Map.of("dishId", dishId));
+    }
+
     private Map<Long, Dish> findByIds(List<Long> ids) {
         List<FlatDishProjection> flatDishProjection;
         if (ids.isEmpty()) {
@@ -252,4 +273,5 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
             double baseProductCarbs
     ) {
     }
+
 }

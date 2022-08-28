@@ -3,6 +3,7 @@ package com.home.calories.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,12 @@ public abstract class JdbcRepository {
 
     public JdbcRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    protected int count() {
+        String countSql = "SELECT count(*) FROM " + table();
+        Integer totalElements = jdbcTemplate.queryForObject(countSql, Map.of(), Integer.class);
+        return totalElements;
     }
 
     protected abstract String table();

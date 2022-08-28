@@ -80,7 +80,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions singleDish(Long dishId) {
+    public SneakyResultActions findDishById(Long dishId) {
         return new SneakyResultActions(
                 mockMvc.perform(get(DISH_BY_ID_URL, dishId))
         );
@@ -104,6 +104,15 @@ public class ApiCaller {
                         put(DISH_BY_ID_URL, dishId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(dto))
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions deleteDish(Long dishId) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        MockMvcRequestBuilders.delete(DISH_BY_ID_URL, dishId)
                 )
         );
     }

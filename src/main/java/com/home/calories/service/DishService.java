@@ -1,5 +1,6 @@
 package com.home.calories.service;
 
+import com.home.calories.exception.ApiEntityNotFoundException;
 import com.home.calories.mapper.DishMapper;
 import com.home.calories.mapper.PortionMapper;
 import com.home.calories.model.Dish;
@@ -32,7 +33,7 @@ public class DishService {
     public DishDto findByIdOrThrow(Long id) {
         return dishRepository.findById(id)
                 .map(dishMapper::map)
-                .orElseThrow(() -> new IllegalArgumentException("Dish does not exists " + id));
+                .orElseThrow(() -> new ApiEntityNotFoundException("Dish does not exists " + id));
     }
 
     public DishDto createDish(CreateDishDto createDishDto) {
@@ -52,7 +53,7 @@ public class DishService {
     }
 
     public void deleteDish(Long dishId) {
-
+        dishRepository.deleteDish(dishId);
     }
 
     public PortionDto createPortion(Long dishId, CreatePortionDto createPortionDto) {

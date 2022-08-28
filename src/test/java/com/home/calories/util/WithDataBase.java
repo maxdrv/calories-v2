@@ -3,6 +3,10 @@ package com.home.calories.util;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
+import com.home.calories.repository.BaseProductRepository;
+import com.home.calories.repository.DishPortionMappingRepository;
+import com.home.calories.repository.DishRepository;
+import com.home.calories.repository.PortionRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,18 @@ public class WithDataBase {
 
     @Autowired
     protected Repo repo;
+
+    @Autowired
+    protected DishRepository dishRepository;
+
+    @Autowired
+    protected DishPortionMappingRepository dishPortionMappingRepository;
+
+    @Autowired
+    protected PortionRepository portionRepository;
+
+    @Autowired
+    protected BaseProductRepository baseProductRepository;
 
     /**
      * for debug on embedded postgres

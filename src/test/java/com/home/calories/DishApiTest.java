@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -85,7 +86,7 @@ public class DishApiTest extends WithDataBase {
     @DatabaseSetup("/repository/dish/before/demo_dish.xml")
     @Test
     void getDishById() {
-        caller.singleDish(1L)
+        caller.findDishById(1L)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -221,6 +222,62 @@ public class DishApiTest extends WithDataBase {
                         }""", true));
     }
 
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @ExpectedDatabase(
+            value = "/repository/base_product/before/base_products_demo.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
+    @Test
+    void deleteDishWithoutPortions() {
+        var createDto = new CreateDishDto().name("empty dish").portions(Lists.emptyList());
 
+        var createdId = caller.createDish(createDto)
+                .andExpect(status().isCreated())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "name": "empty dish",
+                            "portions": []
+                        }""", true))
+                .andReturnAs(DishDto.class)
+                .getId();
+
+        caller.deleteDish(createdId)
+                .andExpect(status().isOk());
+
+        caller.findDishById(createdId)
+                .andExpect(status().isNotFound());
+    }
+
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @ExpectedDatabase(
+            value = "/repository/base_product/before/base_products_demo.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
+    @Test
+    void deleteDishWithPortions() {
+        var portions = new ArrayList<CreatePortionDto>();
+        portions.add(new CreatePortionDto().grams(30).baseProductId(1L));
+        portions.add(new CreatePortionDto().grams(400).baseProductId(2L));
+
+        var createDto = new CreateDishDto().name("protein 400ml").portions(portions);
+
+        var createdId = caller.createDish(createDto)
+                .andExpect(status().isCreated())
+                .andReturnAs(DishDto.class)
+                .getId();
+
+        assertThat(dishPortionMappingRepository.count()).isEqualTo(2);
+        assertThat(portionRepository.count()).isEqualTo(2);
+
+        caller.deleteDish(createdId)
+                .andExpect(status().isOk());
+
+        assertThat(dishPortionMappingRepository.count()).isEqualTo(0);
+        assertThat(portionRepository.count()).isEqualTo(0);
+
+        caller.findDishById(createdId)
+                .andExpect(status().isNotFound());
+    }
 
 }

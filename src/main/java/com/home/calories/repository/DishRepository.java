@@ -23,4 +23,6 @@ public interface DishRepository {
 
     void insertPortions(List<PortionInsert> portionInserts);
 
+    void deleteDish(Long dishId);
+
 }
