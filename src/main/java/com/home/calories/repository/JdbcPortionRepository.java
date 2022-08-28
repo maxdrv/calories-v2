@@ -2,6 +2,7 @@ package com.home.calories.repository;
 
 import com.home.calories.model.Portion;
 import com.home.calories.model.PortionInsert;
+import com.home.calories.model.PortionRecord;
 import com.home.calories.model.PortionUpdate;
 import one.util.streamex.StreamEx;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -37,7 +38,7 @@ public class JdbcPortionRepository extends JdbcRepository implements PortionRepo
             throw new RuntimeException("id should be not null");
         }
 
-        Portion.PortionRecord record = jdbcTemplate.queryForObject(
+        PortionRecord record = jdbcTemplate.queryForObject(
                 "select * from portion where id = :id;",
                 Map.of("id", portionId),
                 this::mapToRecord
@@ -148,8 +149,8 @@ public class JdbcPortionRepository extends JdbcRepository implements PortionRepo
         return Set.of();
     }
 
-    private Portion.PortionRecord mapToRecord(ResultSet rs, int i) throws SQLException {
-        return new Portion.PortionRecord(
+    private PortionRecord mapToRecord(ResultSet rs, int i) throws SQLException {
+        return new PortionRecord(
                 rs.getLong("id"),
                 rs.getInt("name"),
                 rs.getLong("base_product_id")

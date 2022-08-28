@@ -40,7 +40,4 @@ public class Portion implements Nutrients {
         return amountPer100g * this.grams / 100;
     }
 
-    public record PortionRecord(Long id, Integer grams, Long baseProductId) {
-    }
-
 }
