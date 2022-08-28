@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @Repository
-public class JdbcDishRepositoryImpl extends JdbcRepository implements DishRepository {
+public class JdbcDishRepository extends JdbcRepository implements DishRepository {
 
     private static final String QUERY_DISHES_BY_IDS = """
                 select
@@ -38,7 +38,7 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
 
     private final PortionRepository portionRepository;
 
-    public JdbcDishRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, PortionRepository portionRepository) {
+    public JdbcDishRepository(NamedParameterJdbcTemplate jdbcTemplate, PortionRepository portionRepository) {
         super(jdbcTemplate);
         this.portionRepository = portionRepository;
     }
