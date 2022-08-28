@@ -9,5 +9,6 @@
     <include file="portion/portion.sql" relativeToChangelogFile="true"/>
     <include file="dish/dish.sql" relativeToChangelogFile="true"/>
     <include file="dish/dish_portion_mapping.sql" relativeToChangelogFile="true"/>
+    <include file="mealHistory/meal_history.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

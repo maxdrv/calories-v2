@@ -327,6 +327,88 @@ paths:
       responses:
         '200':
           description: portion deleted successfully
+  /api/v1/mealHistory:
+    get:
+      summary: get meal history
+      operationId: getMealHistory
+      tags:
+        - mealHistory
+      parameters:
+        - name: date
+          in: query
+          description: filter by meal consumed at date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: meal history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealHistoryListDto"
+    post:
+      summary: create new meal history
+      operationId: createMealHistory
+      tags:
+        - mealHistory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMealHistoryDto"
+      responses:
+        '201':
+          description: created meal history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealHistoryDto"
+  /api/v1/mealHistory/{mealHistoryId}:
+    put:
+      summary: update meal history
+      operationId: updateMealHistory
+      tags:
+        - mealHistory
+      parameters:
+        - name: mealHistoryId
+          in: path
+          required: true
+          description: The id of the meal history
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMealHistoryDto"
+      responses:
+        '200':
+          description: updated meal history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealHistoryDto"
+    delete:
+      summary: delete meal history
+      operationId: deleteMealHistory
+      tags:
+        - mealHistory
+      parameters:
+        - name: mealHistoryId
+          in: path
+          required: true
+          description: The id of the meal history
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: meal history deleted successfully
   /api/v1/suggest:
     get:
       summary: get entity by string representation
@@ -512,6 +594,48 @@ components:
       properties:
         name:
           type: string
+    CreateMealHistoryDto:
+      required:
+        - dishId
+      properties:
+        dishId:
+          type: integer
+          format: int64
+    UpdateMealHistoryDto:
+      required:
+        - id
+        - dishId
+      properties:
+        dishId:
+          type: integer
+          format: int64
+        consumedAt:
+          type: string
+          format: date-time
+    MealHistoryListDto:
+      required:
+        - content
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/MealHistoryDto"
+    MealHistoryDto:
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        consumedAt:
+          type: string
+          format: date-time
+        nutrients:
+          $ref: "#/components/schemas/NutrientsDto"
     SuggestDto:
       type: object
       required:
