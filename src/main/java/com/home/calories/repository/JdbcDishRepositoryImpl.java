@@ -1,6 +1,7 @@
 package com.home.calories.repository;
 
 import com.home.calories.model.*;
+import com.home.calories.util.DbUtil;
 import one.util.streamex.StreamEx;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,8 +33,8 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
                     bp.carbs      base_product_carbs
                 from dish
                     left join dish_portion_mapping dpm on dpm.dish_id = dish.id
-                    join portion on portion.id = dpm.portion_id
-                    join base_product bp on bp.id = portion.base_product_id
+                    left join portion on portion.id = dpm.portion_id
+                    left join base_product bp on bp.id = portion.base_product_id
                 where dish.id in (:dishIds)
             """;
 
@@ -114,7 +115,23 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
     }
 
     @Override
+    public Dish update(DishUpdate update) {
+        return jdbcTemplate.queryForObject("update dish set name=:name where id=:id returning *;",
+                Map.of("name", update.name(), "id", update.dishId()),
+                (rs, rowNum) -> new Dish(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        new ArrayList<>()
+                )
+        );
+    }
+
+    @Override
     public void insertPortions(List<PortionInsert> portions) {
+        if (portions.isEmpty()) {
+            return;
+        }
+
         String sql = """
                 WITH portion_key AS
                         (INSERT INTO portion (id, grams, base_product_id) VALUES (nextval('portion_seq'), :grams, :base_product_id) RETURNING id)
@@ -204,9 +221,9 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
         return new FlatDishProjection(
                 rs.getLong("dish_id"),
                 rs.getString("dish_name"),
-                rs.getLong("portion_id"),
-                rs.getInt("portion_grams"),
-                rs.getLong("base_product_id"),
+                DbUtil.getLong(rs, "portion_id"),
+                DbUtil.getInteger(rs, "portion_grams"),
+                DbUtil.getLong(rs, "base_product_id"),
                 rs.getString("base_product_name"),
                 rs.getDouble("base_product_kcal"),
                 rs.getDouble("base_product_proteins"),

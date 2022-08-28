@@ -1,10 +1,7 @@
 package com.home.calories.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.home.calories.openapi.model.CreateBaseProductRequest;
-import com.home.calories.openapi.model.CreateDishDto;
-import com.home.calories.openapi.model.EntityTypeDto;
-import com.home.calories.openapi.model.UpdateBaseProductRequest;
+import com.home.calories.openapi.model.*;
 import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -94,6 +91,17 @@ public class ApiCaller {
         return new SneakyResultActions(
                 mockMvc.perform(
                         post(DISH_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto))
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions updateDish(Long dishId, UpdateDishDto dto) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        put(DISH_BY_ID_URL, dishId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(dto))
                 )

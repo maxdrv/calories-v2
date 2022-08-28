@@ -5,7 +5,10 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.home.calories.openapi.model.CreateDishDto;
 import com.home.calories.openapi.model.CreatePortionDto;
+import com.home.calories.openapi.model.DishDto;
+import com.home.calories.openapi.model.UpdateDishDto;
 import com.home.calories.util.WithDataBase;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -172,5 +175,52 @@ public class DishApiTest extends WithDataBase {
                             ]
                         }""", true));
     }
+
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @ExpectedDatabase(
+            value = "/repository/dish/after/empty_dish_created.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
+    @Test
+    void createDishWithoutPortions() {
+        var createDto = new CreateDishDto().name("empty dish").portions(Lists.emptyList());
+
+        caller.createDish(createDto)
+                .andExpect(status().isCreated())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "name": "empty dish",
+                            "portions": []
+                        }""", true));
+    }
+
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @Test
+    void updateDishName() {
+        var createDto = new CreateDishDto().name("empty dish").portions(Lists.emptyList());
+
+        var createdId = caller.createDish(createDto)
+                .andExpect(status().isCreated())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "name": "empty dish",
+                            "portions": []
+                        }""", true))
+                .andReturnAs(DishDto.class)
+                .getId();
+
+        caller.updateDish(createdId, new UpdateDishDto().name("new name for empty dish"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "name": "new name for empty dish",
+                            "portions": []
+                        }""", true));
+    }
+
+
 
 }

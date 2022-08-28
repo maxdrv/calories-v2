@@ -1,9 +1,6 @@
 package com.home.calories.repository;
 
-import com.home.calories.model.Dish;
-import com.home.calories.model.DishIdentity;
-import com.home.calories.model.DishInsert;
-import com.home.calories.model.PortionInsert;
+import com.home.calories.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,6 +18,8 @@ public interface DishRepository {
     Optional<Dish> findById(Long id);
 
     Dish insert(DishInsert insert);
+
+    Dish update(DishUpdate update);
 
     void insertPortions(List<PortionInsert> portionInserts);
 

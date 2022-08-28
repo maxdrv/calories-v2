@@ -47,7 +47,8 @@ public class DishService {
     }
 
     public DishDto updateDish(Long dishId, UpdateDishDto updateDishDto) {
-        return null;
+        Dish updated = dishRepository.update(dishMapper.map(dishId, updateDishDto));
+        return findByIdOrThrow(updated.getId());
     }
 
     public void deleteDish(Long dishId) {
