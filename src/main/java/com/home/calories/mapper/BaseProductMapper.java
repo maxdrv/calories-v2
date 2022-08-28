@@ -1,6 +1,6 @@
 package com.home.calories.mapper;
 
-import com.home.calories.model.BaseProduct;
+import com.home.calories.model.baseProduct.BaseProduct;
 import com.home.calories.openapi.model.BaseProductDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

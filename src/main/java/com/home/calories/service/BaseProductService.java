@@ -1,7 +1,7 @@
 package com.home.calories.service;
 
 import com.home.calories.mapper.BaseProductMapper;
-import com.home.calories.model.BaseProduct;
+import com.home.calories.model.baseProduct.BaseProduct;
 import com.home.calories.openapi.model.BaseProductDto;
 import com.home.calories.openapi.model.CreateBaseProductRequest;
 import com.home.calories.openapi.model.PageOfBaseProductDto;

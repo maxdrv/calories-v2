@@ -1,8 +1,8 @@
 package com.home.calories.mapper;
 
-import com.home.calories.model.MealHistory;
-import com.home.calories.model.MealHistoryInsert;
-import com.home.calories.model.MealHistoryUpdate;
+import com.home.calories.model.mealHistory.MealHistory;
+import com.home.calories.model.mealHistory.MealHistoryInsert;
+import com.home.calories.model.mealHistory.MealHistoryUpdate;
 import com.home.calories.openapi.model.CreateMealHistoryDto;
 import com.home.calories.openapi.model.MealHistoryDto;
 import com.home.calories.openapi.model.UpdateMealHistoryDto;

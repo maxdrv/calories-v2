@@ -1,8 +1,8 @@
 package com.home.calories.repository;
 
-import com.home.calories.model.Portion;
-import com.home.calories.model.PortionInsert;
-import com.home.calories.model.PortionUpdate;
+import com.home.calories.model.portion.Portion;
+import com.home.calories.model.portion.PortionInsert;
+import com.home.calories.model.portion.PortionUpdate;
 
 import java.util.List;
 import java.util.Optional;

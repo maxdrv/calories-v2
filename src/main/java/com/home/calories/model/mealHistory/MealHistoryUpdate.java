@@ -1,4 +1,4 @@
-package com.home.calories.model;
+package com.home.calories.model.mealHistory;
 
 import java.time.Instant;
 

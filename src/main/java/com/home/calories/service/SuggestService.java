@@ -1,6 +1,6 @@
 package com.home.calories.service;
 
-import com.home.calories.model.DishIdentity;
+import com.home.calories.model.dish.DishIdentity;
 import com.home.calories.openapi.model.BaseProductDto;
 import com.home.calories.openapi.model.EntityDto;
 import com.home.calories.openapi.model.EntityTypeDto;

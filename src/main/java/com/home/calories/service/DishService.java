@@ -3,7 +3,7 @@ package com.home.calories.service;
 import com.home.calories.exception.ApiEntityNotFoundException;
 import com.home.calories.mapper.DishMapper;
 import com.home.calories.mapper.PortionMapper;
-import com.home.calories.model.Dish;
+import com.home.calories.model.dish.Dish;
 import com.home.calories.openapi.model.*;
 import com.home.calories.repository.DishFilter;
 import com.home.calories.repository.DishRepository;

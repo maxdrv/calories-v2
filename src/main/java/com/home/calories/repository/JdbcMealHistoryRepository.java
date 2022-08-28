@@ -1,9 +1,9 @@
 package com.home.calories.repository;
 
-import com.home.calories.model.MealHistory;
-import com.home.calories.model.MealHistoryFilter;
-import com.home.calories.model.MealHistoryInsert;
-import com.home.calories.model.MealHistoryUpdate;
+import com.home.calories.model.mealHistory.MealHistory;
+import com.home.calories.model.mealHistory.MealHistoryFilter;
+import com.home.calories.model.mealHistory.MealHistoryInsert;
+import com.home.calories.model.mealHistory.MealHistoryUpdate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 

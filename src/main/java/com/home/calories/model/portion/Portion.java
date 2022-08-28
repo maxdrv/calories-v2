@@ -1,5 +1,7 @@
-package com.home.calories.model;
+package com.home.calories.model.portion;
 
+import com.home.calories.model.Nutrients;
+import com.home.calories.model.baseProduct.BaseProduct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
