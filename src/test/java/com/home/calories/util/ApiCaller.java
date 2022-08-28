@@ -15,6 +15,8 @@ public class ApiCaller {
 
     private static final String DISH_URL = "/api/v1/dish";
     private static final String DISH_BY_ID_URL = "/api/v1/dish/{dishId}";
+    private static final String PORTION_URL = "/api/v1/dish/{dishId}/portion";
+    private static final String PORTION_BY_ID_URL = "/api/v1/dish/{dishId}/portion/{portionId}";
     private static final String SUGGEST_URL = "/api/v1/suggest";
 
     private final MockMvc mockMvc;
@@ -113,6 +115,37 @@ public class ApiCaller {
         return new SneakyResultActions(
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete(DISH_BY_ID_URL, dishId)
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions createPortion(Long dishId, CreatePortionDto dto) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        post(PORTION_URL, dishId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto))
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions updatePortion(Long dishId, Long portionId, UpdatePortionDto dto) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        put(PORTION_BY_ID_URL, dishId, portionId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto))
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions deletePortion(Long dishId, Long portionId) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        MockMvcRequestBuilders.delete(PORTION_BY_ID_URL, dishId, portionId)
                 )
         );
     }

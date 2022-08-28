@@ -86,7 +86,7 @@ public class JdbcPortionRepository extends JdbcRepository implements PortionRepo
                 INSERT INTO dish_portion_mapping (dish_id, portion_id)
                    SELECT :dish_id, portion_key.id
                    FROM portion_key
-                   RETURNING id
+                   RETURNING portion_id
                 """;
 
         var createdId = jdbcTemplate.queryForObject(
@@ -108,7 +108,7 @@ public class JdbcPortionRepository extends JdbcRepository implements PortionRepo
                 """
                 update portion set grams=:grams, base_product_id=:baseProductId
                 where id=:portionId
-                    and (select count(*) from dish_portion_mapping where dish_id=:dishId and portion_id=:portionId) > 1
+                    and (select count(*) from dish_portion_mapping where dish_id=:dishId and portion_id=:portionId) > 0
                 returning id;
                 """,
                 Map.of(
@@ -124,19 +124,43 @@ public class JdbcPortionRepository extends JdbcRepository implements PortionRepo
     }
 
     @Override
-    public void deletePortions(Long dishId, List<Long> portionIds) {
+    public void deletePortion(Long dishId, Long portionId) {
+        if (dishId == null || portionId == null) {
+            throw new RuntimeException("id should be not null");
+        }
+
+        List<Long> portionIds = getPortionsByDishId(dishId);
+        if (portionIds.contains(portionId)) {
+            String deleteMappingsSql = "delete from dish_portion_mapping where portion_id=:portionId";
+            String deletePortionsSql = "delete from portion where id=:portionId";
+
+            jdbcTemplate.update(deleteMappingsSql, Map.of("portionId", portionId));
+            jdbcTemplate.update(deletePortionsSql, Map.of("portionId", portionId));
+        }
+    }
+
+    @Override
+    public void deletePortionsByDish(Long dishId) {
         if (dishId == null) {
             throw new RuntimeException("id should be not null");
         }
-        if (portionIds.isEmpty()) {
-            return;
+
+        List<Long> portionIds = getPortionsByDishId(dishId);
+        if (!portionIds.isEmpty()) {
+            String deleteMappingsSql = "delete from dish_portion_mapping where dish_id=:dishId";
+            String deletePortionsSql = "delete from portion where id in (:portionIds)";
+
+            jdbcTemplate.update(deleteMappingsSql, Map.of("dishId", dishId));
+            jdbcTemplate.update(deletePortionsSql, Map.of("portionIds", portionIds));
         }
+    }
 
-        String deleteMappingsSql = "delete from dish_portion_mapping where dish_id=:dishId";
-        String deletePortionsSql = "delete from portion where id in (:portionIds)";
-
-        jdbcTemplate.update(deleteMappingsSql, Map.of("dishId", dishId));
-        jdbcTemplate.update(deletePortionsSql, Map.of("portionIds", portionIds));
+    private List<Long> getPortionsByDishId(Long dishId) {
+        if (dishId == null) {
+            throw new RuntimeException("id should be not null");
+        }
+        String selectPortionsToDeleteSql = "select portion_id from dish_portion_mapping where dish_id=:dishId";
+        return jdbcTemplate.queryForList(selectPortionsToDeleteSql, Map.of("dishId", dishId), Long.class);
     }
 
     @Override
@@ -152,7 +176,7 @@ public class JdbcPortionRepository extends JdbcRepository implements PortionRepo
     private PortionRecord mapToRecord(ResultSet rs, int i) throws SQLException {
         return new PortionRecord(
                 rs.getLong("id"),
-                rs.getInt("name"),
+                rs.getInt("grams"),
                 rs.getLong("base_product_id")
         );
     }

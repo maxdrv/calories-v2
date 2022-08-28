@@ -3,10 +3,7 @@ package com.home.calories;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
-import com.home.calories.openapi.model.CreateDishDto;
-import com.home.calories.openapi.model.CreatePortionDto;
-import com.home.calories.openapi.model.DishDto;
-import com.home.calories.openapi.model.UpdateDishDto;
+import com.home.calories.openapi.model.*;
 import com.home.calories.util.WithDataBase;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -278,6 +275,173 @@ public class DishApiTest extends WithDataBase {
 
         caller.findDishById(createdId)
                 .andExpect(status().isNotFound());
+    }
+
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @ExpectedDatabase(
+            value = "/repository/base_product/before/base_products_demo.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
+    @Test
+    void createDishAndAddPortion() {
+        var portions = new ArrayList<CreatePortionDto>();
+        portions.add(new CreatePortionDto().grams(30).baseProductId(1L));
+
+        var createDishDto = new CreateDishDto().name("protein 400ml").portions(portions);
+        var createdDishId = caller.createDish(createDishDto)
+                .andExpect(status().isCreated())
+                .andReturnAs(DishDto.class)
+                .getId();
+
+        var createPortionDto = new CreatePortionDto().grams(400).baseProductId(2L);
+        caller.createPortion(createdDishId, createPortionDto)
+                .andExpect(status().isCreated())
+                .andExpect(content().json("""
+                        {
+                            "id": 10001,
+                            "grams": 400,
+                            "baseProduct": {
+                                 "id": 2,
+                                 "name": "milk",
+                                 "nutrients": {
+                                   "kcal": 11.0,
+                                   "proteins": 14.0,
+                                   "fats": 13.0,
+                                   "carbs": 12.0
+                                 }
+                            }
+                        }
+                        """));
+
+        caller.findDishById(createdDishId)
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "name": "protein 400ml",
+                            "portions": [
+                                {
+                                    "id": 10000,
+                                    "grams": 30,
+                                    "baseProduct": {
+                                         "id": 1,
+                                         "name": "protein",
+                                         "nutrients": {
+                                           "kcal": 150.0,
+                                           "proteins": 23.0,
+                                           "fats": 4.0,
+                                           "carbs": 10.0
+                                         }
+                                    }
+                                },
+                                {
+                                    "id": 10001,
+                                    "grams": 400,
+                                    "baseProduct": {
+                                         "id": 2,
+                                         "name": "milk",
+                                         "nutrients": {
+                                           "kcal": 11.0,
+                                           "proteins": 14.0,
+                                           "fats": 13.0,
+                                           "carbs": 12.0
+                                         }
+                                    }
+                                }
+                            ]
+                        }""", true));
+    }
+
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @Test
+    void createDishAndUpdatePortion() {
+        var portions = new ArrayList<CreatePortionDto>();
+        portions.add(new CreatePortionDto().grams(30).baseProductId(1L));
+
+        var createDishDto = new CreateDishDto().name("protein 400ml").portions(portions);
+        var createdDishDto = caller.createDish(createDishDto)
+                .andExpect(status().isCreated())
+                .andReturnAs(DishDto.class);
+
+        var updatePortionDto = new UpdatePortionDto().grams(400).baseProductId(2L);
+        caller.updatePortion(
+                        createdDishDto.getId(),
+                        createdDishDto.getPortions().stream().findFirst().orElseThrow().getId(),
+                        updatePortionDto
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "grams": 400,
+                            "baseProduct": {
+                                 "id": 2,
+                                 "name": "milk",
+                                 "nutrients": {
+                                   "kcal": 11.0,
+                                   "proteins": 14.0,
+                                   "fats": 13.0,
+                                   "carbs": 12.0
+                                 }
+                            }
+                        }
+                        """));
+    }
+
+    @DatabaseSetup("/repository/base_product/before/base_products_demo.xml")
+    @ExpectedDatabase(
+            value = "/repository/dish/after/create_dish_and_delete_portion.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
+    @Test
+    void createDishAndDeletePortion() {
+        var portions = new ArrayList<CreatePortionDto>();
+        portions.add(new CreatePortionDto().grams(30).baseProductId(1L));
+        portions.add(new CreatePortionDto().grams(400).baseProductId(2L));
+
+        var createDto = new CreateDishDto().name("protein 400ml").portions(portions);
+
+        var createdDishDto = caller.createDish(createDto)
+                .andExpect(status().isCreated())
+                .andReturnAs(DishDto.class);
+
+        assertThat(dishPortionMappingRepository.count()).isEqualTo(2);
+        assertThat(portionRepository.count()).isEqualTo(2);
+
+        caller.deletePortion(
+                        createdDishDto.getId(),
+                        createdDishDto.getPortions().stream()
+                                .filter(portion -> portion.getBaseProduct().getId() == 1L)
+                                .findFirst().orElseThrow().getId()
+                )
+                .andExpect(status().isOk());
+
+        assertThat(dishPortionMappingRepository.count()).isEqualTo(1);
+        assertThat(portionRepository.count()).isEqualTo(1);
+
+        caller.findDishById(createdDishDto.getId())
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "id": 10000,
+                            "name": "protein 400ml",
+                            "portions": [
+                                {
+                                    "id": 10001,
+                                    "grams": 400,
+                                    "baseProduct": {
+                                         "id": 2,
+                                         "name": "milk",
+                                         "nutrients": {
+                                           "kcal": 11.0,
+                                           "proteins": 14.0,
+                                           "fats": 13.0,
+                                           "carbs": 12.0
+                                         }
+                                    }
+                                }
+                            ]
+                        }""", true));
     }
 
 }

@@ -132,17 +132,8 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
         if (dishId == null) {
             throw new RuntimeException("id should be not null");
         }
-
-        String selectPortionsToDeleteSql = "select portion_id from dish_portion_mapping where dish_id=:dishId";
-        String deleteDishSql = "delete from dish where id=:dishId";
-
-        List<Long> portionIds = jdbcTemplate.queryForList(selectPortionsToDeleteSql, Map.of("dishId", dishId), Long.class);
-
-        if (!portionIds.isEmpty()) {
-            portionRepository.deletePortions(dishId, portionIds);
-        }
-
-        jdbcTemplate.update(deleteDishSql, Map.of("dishId", dishId));
+        portionRepository.deletePortionsByDish(dishId);
+        jdbcTemplate.update("delete from dish where id=:dishId", Map.of("dishId", dishId));
     }
 
     private Map<Long, Dish> findByIds(List<Long> ids) {

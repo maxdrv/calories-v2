@@ -19,10 +19,8 @@ public interface PortionRepository {
 
     Portion updatePortion(PortionUpdate portionUpdate);
 
-    default void deletePortion(Long dishId, Long portionId) {
-        deletePortions(dishId, List.of(portionId));
-    }
+    void deletePortion(Long dishId, Long portionId);
 
-    void deletePortions(Long dishId, List<Long> portionsIds);
+    void deletePortionsByDish(Long dishId);
 
 }
