@@ -6,9 +6,7 @@ import one.util.streamex.StreamEx;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -38,8 +36,11 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
                 where dish.id in (:dishIds)
             """;
 
-    public JdbcDishRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final PortionRepository portionRepository;
+
+    public JdbcDishRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, PortionRepository portionRepository) {
         super(jdbcTemplate);
+        this.portionRepository = portionRepository;
     }
 
     @Override
@@ -127,47 +128,18 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
     }
 
     @Override
-    public void insertPortions(List<PortionInsert> portions) {
-        if (portions.isEmpty()) {
-            return;
-        }
-
-        String sql = """
-                WITH portion_key AS
-                        (INSERT INTO portion (id, grams, base_product_id) VALUES (nextval('portion_seq'), :grams, :base_product_id) RETURNING id)
-                INSERT INTO dish_portion_mapping (dish_id, portion_id)
-                   SELECT :dish_id, portion_key.id
-                   FROM portion_key
-                """;
-
-        var sqlParameterSourceArray = StreamEx.of(portions)
-                .map(portion -> Map.of(
-                        "grams", portion.grams(),
-                        "base_product_id", portion.baseProductId(),
-                        "dish_id", portion.dishId()
-                ))
-                .map(MapSqlParameterSource::new)
-                .toArray(new SqlParameterSource[0]);
-
-        jdbcTemplate.batchUpdate(sql, sqlParameterSourceArray);
-    }
-
-    @Override
     public void deleteDish(Long dishId) {
         if (dishId == null) {
             throw new RuntimeException("id should be not null");
         }
 
         String selectPortionsToDeleteSql = "select portion_id from dish_portion_mapping where dish_id=:dishId";
-        String deleteMappingsSql = "delete from dish_portion_mapping where dish_id=:dishId";
-        String deletePortionsSql = "delete from portion where id in (:portionIds)";
         String deleteDishSql = "delete from dish where id=:dishId";
 
         List<Long> portionIds = jdbcTemplate.queryForList(selectPortionsToDeleteSql, Map.of("dishId", dishId), Long.class);
 
         if (!portionIds.isEmpty()) {
-            jdbcTemplate.update(deleteMappingsSql, Map.of("dishId", dishId));
-            jdbcTemplate.update(deletePortionsSql, Map.of("portionIds", portionIds));
+            portionRepository.deletePortions(dishId, portionIds);
         }
 
         jdbcTemplate.update(deleteDishSql, Map.of("dishId", dishId));
