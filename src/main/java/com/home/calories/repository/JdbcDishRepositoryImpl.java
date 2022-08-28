@@ -1,14 +1,13 @@
 package com.home.calories.repository;
 
-import com.home.calories.model.BaseProduct;
-import com.home.calories.model.Dish;
-import com.home.calories.model.DishIdentity;
-import com.home.calories.model.Portion;
+import com.home.calories.model.*;
 import one.util.streamex.StreamEx;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -96,6 +95,44 @@ public class JdbcDishRepositoryImpl extends JdbcRepository implements DishReposi
             return map.values().stream().findFirst();
         }
         throw new IllegalStateException("query for single entity return several " + map.size());
+    }
+
+    @Override
+    public Dish insert(DishInsert insert) {
+        return jdbcTemplate.queryForObject("""
+                        insert into dish (id, name)
+                            values (nextval('dish_seq'), :name)
+                        returning *;
+                        """,
+                Map.of("name", insert.name()),
+                (rs, rowNum) -> new Dish(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        new ArrayList<>()
+                )
+        );
+    }
+
+    @Override
+    public void insertPortions(List<PortionInsert> portions) {
+        String sql = """
+                WITH portion_key AS
+                        (INSERT INTO portion (id, grams, base_product_id) VALUES (nextval('portion_seq'), :grams, :base_product_id) RETURNING id)
+                INSERT INTO dish_portion_mapping (dish_id, portion_id)
+                   SELECT :dish_id, portion_key.id
+                   FROM portion_key
+                """;
+
+        var sqlParameterSourceArray = StreamEx.of(portions)
+                .map(portion -> Map.of(
+                        "grams", portion.grams(),
+                        "base_product_id", portion.baseProductId(),
+                        "dish_id", portion.dishId()
+                ))
+                .map(MapSqlParameterSource::new)
+                .toArray(new SqlParameterSource[0]);
+
+        jdbcTemplate.batchUpdate(sql, sqlParameterSourceArray);
     }
 
     private Map<Long, Dish> findByIds(List<Long> ids) {

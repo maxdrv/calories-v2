@@ -1,6 +1,7 @@
 package com.home.calories.service;
 
 import com.home.calories.mapper.DishMapper;
+import com.home.calories.mapper.PortionMapper;
 import com.home.calories.model.Dish;
 import com.home.calories.openapi.model.*;
 import com.home.calories.repository.DishFilter;
@@ -16,6 +17,7 @@ public class DishService {
 
     private final DishRepository dishRepository;
     private final DishMapper dishMapper;
+    private final PortionMapper portionMapper;
 
     public PageOfDishDto page(DishFilter filter, Pageable pageable) {
         Page<Dish> page = dishRepository.find(filter, pageable);
@@ -34,7 +36,14 @@ public class DishService {
     }
 
     public DishDto createDish(CreateDishDto createDishDto) {
-        return null;
+        Dish created = dishRepository.insert(dishMapper.map(createDishDto));
+
+        var portionInserts = createDishDto.getPortions().stream()
+                .map(createPortion -> portionMapper.map(created.getId(), createPortion))
+                .toList();
+
+        dishRepository.insertPortions(portionInserts);
+        return findByIdOrThrow(created.getId());
     }
 
     public DishDto updateDish(Long dishId, UpdateDishDto updateDishDto) {

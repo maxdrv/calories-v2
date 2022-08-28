@@ -1,6 +1,8 @@
 package com.home.calories.mapper;
 
 import com.home.calories.model.Dish;
+import com.home.calories.model.DishInsert;
+import com.home.calories.openapi.model.CreateDishDto;
 import com.home.calories.openapi.model.DishDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -13,5 +15,7 @@ import org.mapstruct.ReportingPolicy;
 public interface DishMapper {
 
     DishDto map(Dish dish);
+
+    DishInsert map(CreateDishDto dto);
 
 }

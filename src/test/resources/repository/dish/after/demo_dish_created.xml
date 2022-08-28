@@ -1,0 +1,9 @@
+<dataset>
+    <portion id="10000" grams="30" base_product_id="1" />
+    <portion id="10001" grams="400" base_product_id="2" />
+
+    <dish id="10000" name="protein 400ml"/>
+
+    <dish_portion_mapping dish_id="10000" portion_id="10000"/>
+    <dish_portion_mapping dish_id="10000" portion_id="10001"/>
+</dataset>

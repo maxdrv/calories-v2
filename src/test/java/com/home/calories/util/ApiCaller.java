@@ -2,6 +2,7 @@ package com.home.calories.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.calories.openapi.model.CreateBaseProductRequest;
+import com.home.calories.openapi.model.CreateDishDto;
 import com.home.calories.openapi.model.EntityTypeDto;
 import com.home.calories.openapi.model.UpdateBaseProductRequest;
 import lombok.SneakyThrows;
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class ApiCaller {
 
     private static final String DISH_URL = "/api/v1/dish";
+    private static final String DISH_BY_ID_URL = "/api/v1/dish/{dishId}";
     private static final String SUGGEST_URL = "/api/v1/suggest";
 
     private final MockMvc mockMvc;
@@ -77,6 +79,24 @@ public class ApiCaller {
     public SneakyResultActions pageOfDishes(String params) {
         return new SneakyResultActions(
                 mockMvc.perform(get(DISH_URL + params))
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions singleDish(Long dishId) {
+        return new SneakyResultActions(
+                mockMvc.perform(get(DISH_BY_ID_URL, dishId))
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions createDish(CreateDishDto dto) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        post(DISH_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto))
+                )
         );
     }
 
