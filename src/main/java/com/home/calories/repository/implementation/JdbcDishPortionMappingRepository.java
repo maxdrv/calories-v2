@@ -1,5 +1,6 @@
-package com.home.calories.repository;
+package com.home.calories.repository.implementation;
 
+import com.home.calories.repository.DishPortionMappingRepository;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 

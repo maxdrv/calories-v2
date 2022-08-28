@@ -1,6 +1,8 @@
-package com.home.calories.repository;
+package com.home.calories.repository.implementation;
 
 import com.home.calories.model.baseProduct.BaseProduct;
+import com.home.calories.model.baseProduct.BaseProductFilter;
+import com.home.calories.repository.BaseProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +30,8 @@ public class JdbcBaseProductRepository extends JdbcRepository implements BasePro
 
         Map<String, Object> params = new HashMap<>();
 
-        if (filter.getName() != null) {
-            String namePattern = "%" + filter.getName() + "%";
+        if (filter.name() != null) {
+            String namePattern = "%" + filter.name() + "%";
             params.put("namePattern", namePattern);
 
             String where = " WHERE name ilike :namePattern";

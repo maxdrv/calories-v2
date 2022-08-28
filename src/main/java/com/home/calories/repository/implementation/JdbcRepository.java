@@ -1,4 +1,4 @@
-package com.home.calories.repository;
+package com.home.calories.repository.implementation;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

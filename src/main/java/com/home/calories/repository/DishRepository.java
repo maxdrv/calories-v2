@@ -1,9 +1,6 @@
 package com.home.calories.repository;
 
-import com.home.calories.model.dish.Dish;
-import com.home.calories.model.dish.DishIdentity;
-import com.home.calories.model.dish.DishInsert;
-import com.home.calories.model.dish.DishUpdate;
+import com.home.calories.model.dish.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,11 +1,10 @@
-package com.home.calories.repository;
+package com.home.calories.repository.implementation;
 
 import com.home.calories.model.baseProduct.BaseProduct;
-import com.home.calories.model.dish.Dish;
-import com.home.calories.model.dish.DishIdentity;
-import com.home.calories.model.dish.DishInsert;
-import com.home.calories.model.dish.DishUpdate;
+import com.home.calories.model.dish.*;
 import com.home.calories.model.portion.Portion;
+import com.home.calories.repository.DishRepository;
+import com.home.calories.repository.PortionRepository;
 import com.home.calories.util.DbUtil;
 import one.util.streamex.StreamEx;
 import org.springframework.data.domain.Page;
@@ -63,8 +62,8 @@ public class JdbcDishRepository extends JdbcRepository implements DishRepository
 
         Map<String, Object> params = new HashMap<>();
 
-        if (filter.getName() != null) {
-            String namePattern = "%" + filter.getName() + "%";
+        if (filter.name() != null) {
+            String namePattern = "%" + filter.name() + "%";
             params.put("namePattern", namePattern);
 
             String where = " WHERE name ilike :namePattern";

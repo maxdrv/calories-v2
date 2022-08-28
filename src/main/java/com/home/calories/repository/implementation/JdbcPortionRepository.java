@@ -1,9 +1,11 @@
-package com.home.calories.repository;
+package com.home.calories.repository.implementation;
 
 import com.home.calories.model.portion.Portion;
 import com.home.calories.model.portion.PortionInsert;
 import com.home.calories.model.portion.PortionRecord;
 import com.home.calories.model.portion.PortionUpdate;
+import com.home.calories.repository.BaseProductRepository;
+import com.home.calories.repository.PortionRepository;
 import one.util.streamex.StreamEx;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

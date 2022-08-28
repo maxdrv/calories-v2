@@ -6,7 +6,7 @@ import com.home.calories.openapi.model.BaseProductDto;
 import com.home.calories.openapi.model.CreateBaseProductRequest;
 import com.home.calories.openapi.model.PageOfBaseProductDto;
 import com.home.calories.openapi.model.UpdateBaseProductRequest;
-import com.home.calories.repository.BaseProductFilter;
+import com.home.calories.model.baseProduct.BaseProductFilter;
 import com.home.calories.repository.BaseProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

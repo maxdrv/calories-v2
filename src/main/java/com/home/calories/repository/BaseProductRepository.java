@@ -1,6 +1,7 @@
 package com.home.calories.repository;
 
 import com.home.calories.model.baseProduct.BaseProduct;
+import com.home.calories.model.baseProduct.BaseProductFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
