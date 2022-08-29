@@ -17,6 +17,8 @@ public class ApiCaller {
     private static final String DISH_BY_ID_URL = "/api/v1/dish/{dishId}";
     private static final String PORTION_URL = "/api/v1/dish/{dishId}/portion";
     private static final String PORTION_BY_ID_URL = "/api/v1/dish/{dishId}/portion/{portionId}";
+    private static final String MEAL_HISTORY_URL = "/api/v1/mealHistory";
+    private static final String MEAL_HISTORY_BY_ID_URL = "/api/v1/mealHistory/{mealHistoryId}";
     private static final String SUGGEST_URL = "/api/v1/suggest";
 
     private final MockMvc mockMvc;
@@ -146,6 +148,47 @@ public class ApiCaller {
         return new SneakyResultActions(
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete(PORTION_BY_ID_URL, dishId, portionId)
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions getMealHistory(String params) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        get(MEAL_HISTORY_URL + params)
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions createMealHistory(CreateMealHistoryDto dto) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        post(MEAL_HISTORY_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto))
+                )
+        );
+    }
+
+
+    @SneakyThrows
+    public SneakyResultActions updateMealHistory(Long mealHistoryId, UpdateMealHistoryDto dto) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        put(MEAL_HISTORY_BY_ID_URL, mealHistoryId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto))
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions deleteMealHistory(Long mealHistoryId) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        MockMvcRequestBuilders.delete(MEAL_HISTORY_BY_ID_URL, mealHistoryId)
                 )
         );
     }
