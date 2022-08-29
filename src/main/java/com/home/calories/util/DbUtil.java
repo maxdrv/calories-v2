@@ -2,6 +2,7 @@ package com.home.calories.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class DbUtil {
 
@@ -22,6 +23,11 @@ public class DbUtil {
     public static Integer getInteger(ResultSet rs, String column) throws SQLException {
         int result = rs.getInt(column);
         return rs.wasNull() ? null : result;
+    }
+
+    public static Instant getInstant(ResultSet rs, String column) throws SQLException {
+        var result = rs.getTimestamp(column);
+        return rs.wasNull() ? null : result.toInstant();
     }
 
 }

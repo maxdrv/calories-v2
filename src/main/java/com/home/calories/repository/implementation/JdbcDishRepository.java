@@ -140,7 +140,8 @@ public class JdbcDishRepository extends JdbcRepository implements DishRepository
         jdbcTemplate.update("delete from dish where id=:dishId", Map.of("dishId", dishId));
     }
 
-    private Map<Long, Dish> findByIds(List<Long> ids) {
+    @Override
+    public Map<Long, Dish> findByIds(List<Long> ids) {
         List<FlatDishProjection> flatDishProjection;
         if (ids.isEmpty()) {
             flatDishProjection = new ArrayList<>();

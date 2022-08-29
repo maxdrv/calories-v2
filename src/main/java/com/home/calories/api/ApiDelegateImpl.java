@@ -1,9 +1,9 @@
 package com.home.calories.api;
 
+import com.home.calories.model.dish.DishFilter;
 import com.home.calories.model.mealHistory.MealHistoryFilter;
 import com.home.calories.openapi.api.ApiApiDelegate;
 import com.home.calories.openapi.model.*;
-import com.home.calories.model.dish.DishFilter;
 import com.home.calories.service.DishService;
 import com.home.calories.service.MealHistoryService;
 import com.home.calories.service.SuggestService;
