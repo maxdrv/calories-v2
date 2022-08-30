@@ -1,6 +1,7 @@
 package com.home.calories.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.home.calories.openapi.model.*;
 import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ public class ApiCaller {
     public ApiCaller(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
     }
 
     @SneakyThrows
