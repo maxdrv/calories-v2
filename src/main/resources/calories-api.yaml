@@ -634,6 +634,11 @@ components:
         consumedAt:
           type: string
           format: date-time
+        dishId:
+          type: integer
+          format: int64
+        dishName:
+          type: string
         nutrients:
           $ref: "#/components/schemas/NutrientsDto"
     SuggestDto:

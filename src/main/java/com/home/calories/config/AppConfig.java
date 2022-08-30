@@ -2,6 +2,7 @@ package com.home.calories.config;
 
 
 import com.home.calories.logging.LoggableDispatcherServlet;
+import com.home.calories.util.DateTimeUtil;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +12,10 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.time.Clock;
+
 @Configuration
-public class CrossOriginConfiguration {
+public class AppConfig {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -50,6 +53,11 @@ public class CrossOriginConfiguration {
     @Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
     public DispatcherServlet dispatcherServlet() {
         return new LoggableDispatcherServlet();
+    }
+
+    @Bean
+    public Clock clock() {
+        return Clock.system(DateTimeUtil.MOSCOW_ZONE_ID);
     }
 
 }

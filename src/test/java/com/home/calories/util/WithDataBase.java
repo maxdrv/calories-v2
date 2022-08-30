@@ -3,14 +3,12 @@ package com.home.calories.util;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
-import com.home.calories.repository.BaseProductRepository;
-import com.home.calories.repository.DishPortionMappingRepository;
-import com.home.calories.repository.DishRepository;
-import com.home.calories.repository.PortionRepository;
+import com.home.calories.repository.*;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener;
@@ -45,6 +43,9 @@ public class WithDataBase {
 
     @Autowired
     protected Repo repo;
+
+    @Autowired
+    protected MealHistoryRepository mealHistoryRepository;
 
     @Autowired
     protected DishRepository dishRepository;

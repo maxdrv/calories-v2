@@ -1,0 +1,12 @@
+<dataset>
+    <base_product id="3" name="turkey fillet" kcal="114" proteins="23.66" fats="1.48" carbs="0.14"/>
+    <base_product id="4" name="bread crumbs" kcal="11" proteins="13.35" fats="5.30" carbs="71.98"/>
+
+    <portion id="3" grams="300" base_product_id="3" />
+    <portion id="4" grams="30" base_product_id="4" />
+
+    <dish id="2" name="turkey fillet in bread crumbs"/>
+
+    <dish_portion_mapping dish_id="2" portion_id="3"/>
+    <dish_portion_mapping dish_id="2" portion_id="4"/>
+</dataset>

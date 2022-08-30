@@ -4,13 +4,16 @@ import com.home.calories.model.dish.Dish;
 import com.home.calories.model.mealHistory.*;
 import com.home.calories.repository.DishRepository;
 import com.home.calories.repository.MealHistoryRepository;
+import com.home.calories.util.DateTimeUtil;
 import com.home.calories.util.DbUtil;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,10 +24,12 @@ import static com.home.calories.util.DateTimeUtil.MOSCOW_ZONE_ID;
 public class JdbcMealHistoryRepository extends JdbcRepository implements MealHistoryRepository {
 
     private final DishRepository dishRepository;
+    private final Clock clock;
 
-    public JdbcMealHistoryRepository(NamedParameterJdbcTemplate jdbcTemplate, DishRepository dishRepository) {
+    public JdbcMealHistoryRepository(NamedParameterJdbcTemplate jdbcTemplate, DishRepository dishRepository, Clock clock) {
         super(jdbcTemplate);
         this.dishRepository = dishRepository;
+        this.clock = clock;
     }
 
     @Override
@@ -58,12 +63,18 @@ public class JdbcMealHistoryRepository extends JdbcRepository implements MealHis
 
     @Override
     public MealHistory insert(MealHistoryInsert insert) {
+        var now = OffsetDateTime.now(clock);
         var record = jdbcTemplate.queryForObject("""
                         insert into meal_history (id, created_at, updated_at, dish_id, consumed_at)
-                            values (nextval('meal_history_seq'), now(), now(), :dishId, now())
+                            values (nextval('meal_history_seq'), :createdAt, :updatedAt, :dishId, :consumedAt)
                         returning *;
                         """,
-                Map.of("dishId", insert.dishId()),
+                Map.of(
+                        "dishId", insert.dishId(),
+                        "createdAt", now,
+                        "updatedAt", now,
+                        "consumedAt", now
+                ),
                 this::map
         );
 
@@ -79,14 +90,18 @@ public class JdbcMealHistoryRepository extends JdbcRepository implements MealHis
 
     @Override
     public MealHistory update(MealHistoryUpdate update) {
+        var now = OffsetDateTime.now(clock);
+        var consumedAt = OffsetDateTime.ofInstant(update.consumedAt(), MOSCOW_ZONE_ID);
+
         var record = jdbcTemplate.queryForObject("""
-                        update meal_history set update_at=now(), dish_id=:dishId, consumedAt=:consumedAt
+                        update meal_history set update_at=:updatedAt, dish_id=:dishId, consumedAt=:consumedAt
                             where id=:mealHistoryId
                         returning *;
                         """,
                 Map.of(
                         "dishId", update.dishId(),
-                        "consumedAt", update.consumedAt(),
+                        "updatedAt", now,
+                        "consumedAt", consumedAt,
                         "mealHistoryId", update.mealHistoryId()
                 ),
                 this::map

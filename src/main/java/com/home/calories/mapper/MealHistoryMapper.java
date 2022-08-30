@@ -17,6 +17,8 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface MealHistoryMapper {
 
+    @Mapping(target = "dishId", source = "dish.id")
+    @Mapping(target = "dishName", source = "dish.name")
     @Mapping(target = "nutrients.kcal", source = "dish.kcal")
     @Mapping(target = "nutrients.proteins", source = "dish.proteins")
     @Mapping(target = "nutrients.fats", source = "dish.fats")
