@@ -15,17 +15,17 @@ public class SuggestApiTest extends WithDataBase {
     void suggestBaseProductByName() {
         var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
         request1.name("ABC");
-        caller.create(request1).andExpect(status().isCreated());
+        caller.createBaseProduct(request1).andExpect(status().isCreated());
 
         var request2 = Repo.CREATE_PROTEIN_REQUEST.get();
         request2.name("ABCD");
-        caller.create(request2).andExpect(status().isCreated());
+        caller.createBaseProduct(request2).andExpect(status().isCreated());
 
         var request3 = Repo.CREATE_PROTEIN_REQUEST.get();
         request3.name("ABCDE");
-        caller.create(request3).andExpect(status().isCreated());
+        caller.createBaseProduct(request3).andExpect(status().isCreated());
 
-        caller.suggest("BCD", EntityTypeDto.BASE_PRODUCT)
+        caller.suggestEntity("BCD", EntityTypeDto.BASE_PRODUCT)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -40,7 +40,7 @@ public class SuggestApiTest extends WithDataBase {
     @DatabaseSetup("/repository/dish/before/demo_dish.xml")
     @Test
     void suggestDishByName() {
-        caller.suggest("pro", EntityTypeDto.DISH)
+        caller.suggestEntity("pro", EntityTypeDto.DISH)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {

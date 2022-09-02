@@ -7,10 +7,10 @@ info:
 servers:
   - url: http://localhost:8080/
 paths:
-  /baseProducts:
+  /api/v1/baseProduct:
     get:
       summary: Page of base products
-      operationId: pageProducts
+      operationId: getPageOfBaseProducts
       tags:
         - baseProduct
       parameters:
@@ -62,10 +62,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BaseProductDto"
-  /baseProducts/{baseProductId}:
+  /api/v1/baseProduct/{baseProductId}:
     get:
       summary: get base product by id
-      operationId: baseProductById
+      operationId: getBaseProductById
       tags:
         - baseProduct
       parameters:
@@ -85,7 +85,7 @@ paths:
                 $ref: "#/components/schemas/BaseProductDto"
     put:
       summary: update new base product
-      operationId: updateBaseProduct
+      operationId: updateBaseProductById
       tags:
         - baseProduct
       parameters:
@@ -111,7 +111,7 @@ paths:
                 $ref: "#/components/schemas/BaseProductDto"
     delete:
       summary: delete base prodcut
-      operationId: deleteBaseProduct
+      operationId: deleteBaseProductById
       tags:
         - baseProduct
       parameters:
@@ -128,7 +128,7 @@ paths:
   /api/v1/dish:
     get:
       summary: Page of dishes
-      operationId: pageDishes
+      operationId: getPageOfDishes
       tags:
         - dish
       parameters:
@@ -183,7 +183,7 @@ paths:
   /api/v1/dish/{dishId}:
     get:
       summary: get dish by id
-      operationId: findDishById
+      operationId: getDishById
       tags:
         - dish
       parameters:
@@ -203,7 +203,7 @@ paths:
                 $ref: "#/components/schemas/DishDto"
     put:
       summary: update dish
-      operationId: updateDish
+      operationId: updateDishById
       tags:
         - dish
       parameters:
@@ -229,7 +229,7 @@ paths:
                 $ref: "#/components/schemas/DishDto"
     delete:
       summary: delete dish
-      operationId: deleteDish
+      operationId: deleteDishById
       tags:
         - dish
       parameters:
@@ -246,7 +246,7 @@ paths:
   /api/v1/dish/{dishId}/portion:
     post:
       summary: add portion to dish
-      operationId: createPortion
+      operationId: addPortionToDish
       tags:
         - dish
       parameters:
@@ -273,7 +273,7 @@ paths:
   /api/v1/dish/{dishId}/portion/{portionId}:
     put:
       summary: updated portion
-      operationId: updatePortion
+      operationId: updatePortionById
       tags:
         - dish
       parameters:
@@ -306,7 +306,7 @@ paths:
                 $ref: "#/components/schemas/PortionDto"
     delete:
       summary: delete portion
-      operationId: deletePortion
+      operationId: deletePortionById
       tags:
         - dish
       parameters:
@@ -330,7 +330,7 @@ paths:
   /api/v1/mealHistory:
     get:
       summary: get meal history
-      operationId: getMealHistory
+      operationId: getMealHistoryList
       tags:
         - mealHistory
       parameters:
@@ -369,7 +369,7 @@ paths:
   /api/v1/mealHistory/{mealHistoryId}:
     put:
       summary: update meal history
-      operationId: updateMealHistory
+      operationId: updateMealHistoryById
       tags:
         - mealHistory
       parameters:
@@ -395,7 +395,7 @@ paths:
                 $ref: "#/components/schemas/MealHistoryDto"
     delete:
       summary: delete meal history
-      operationId: deleteMealHistory
+      operationId: deleteMealHistoryById
       tags:
         - mealHistory
       parameters:

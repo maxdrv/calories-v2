@@ -18,7 +18,7 @@ public class DishApiTest extends WithDataBase {
 
     @Test
     public void emptyPageOfDishes() {
-        caller.pageOfDishes("")
+        caller.getPageOfDishes("")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -33,7 +33,7 @@ public class DishApiTest extends WithDataBase {
     @DatabaseSetup("/repository/dish/before/demo_dish.xml")
     @Test
     public void pageOfDishesWithSingleDish() {
-        caller.pageOfDishes("?name=pro")
+        caller.getPageOfDishes("?name=pro")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -83,7 +83,7 @@ public class DishApiTest extends WithDataBase {
     @DatabaseSetup("/repository/dish/before/demo_dish.xml")
     @Test
     void getDishById() {
-        caller.findDishById(1L)
+        caller.getDishById(1L)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -209,7 +209,7 @@ public class DishApiTest extends WithDataBase {
                 .andReturnAs(DishDto.class)
                 .getId();
 
-        caller.updateDish(createdId, new UpdateDishDto().name("new name for empty dish"))
+        caller.updateDishById(createdId, new UpdateDishDto().name("new name for empty dish"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -239,10 +239,10 @@ public class DishApiTest extends WithDataBase {
                 .andReturnAs(DishDto.class)
                 .getId();
 
-        caller.deleteDish(createdId)
+        caller.deleteDishById(createdId)
                 .andExpect(status().isOk());
 
-        caller.findDishById(createdId)
+        caller.getDishById(createdId)
                 .andExpect(status().isNotFound());
     }
 
@@ -267,13 +267,13 @@ public class DishApiTest extends WithDataBase {
         assertThat(dishPortionMappingRepository.count()).isEqualTo(2);
         assertThat(portionRepository.count()).isEqualTo(2);
 
-        caller.deleteDish(createdId)
+        caller.deleteDishById(createdId)
                 .andExpect(status().isOk());
 
         assertThat(dishPortionMappingRepository.count()).isEqualTo(0);
         assertThat(portionRepository.count()).isEqualTo(0);
 
-        caller.findDishById(createdId)
+        caller.getDishById(createdId)
                 .andExpect(status().isNotFound());
     }
 
@@ -294,7 +294,7 @@ public class DishApiTest extends WithDataBase {
                 .getId();
 
         var createPortionDto = new CreatePortionDto().grams(400).baseProductId(2L);
-        caller.createPortion(createdDishId, createPortionDto)
+        caller.addPortionToDish(createdDishId, createPortionDto)
                 .andExpect(status().isCreated())
                 .andExpect(content().json("""
                         {
@@ -313,7 +313,7 @@ public class DishApiTest extends WithDataBase {
                         }
                         """));
 
-        caller.findDishById(createdDishId)
+        caller.getDishById(createdDishId)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -364,7 +364,7 @@ public class DishApiTest extends WithDataBase {
                 .andReturnAs(DishDto.class);
 
         var updatePortionDto = new UpdatePortionDto().grams(400).baseProductId(2L);
-        caller.updatePortion(
+        caller.updatePortionById(
                         createdDishDto.getId(),
                         createdDishDto.getPortions().stream().findFirst().orElseThrow().getId(),
                         updatePortionDto
@@ -408,7 +408,7 @@ public class DishApiTest extends WithDataBase {
         assertThat(dishPortionMappingRepository.count()).isEqualTo(2);
         assertThat(portionRepository.count()).isEqualTo(2);
 
-        caller.deletePortion(
+        caller.deletePortionById(
                         createdDishDto.getId(),
                         createdDishDto.getPortions().stream()
                                 .filter(portion -> portion.getBaseProduct().getId() == 1L)
@@ -419,7 +419,7 @@ public class DishApiTest extends WithDataBase {
         assertThat(dishPortionMappingRepository.count()).isEqualTo(1);
         assertThat(portionRepository.count()).isEqualTo(1);
 
-        caller.findDishById(createdDishDto.getId())
+        caller.getDishById(createdDishDto.getId())
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {

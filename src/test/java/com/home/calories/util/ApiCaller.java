@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Component
 public class ApiCaller {
 
+    private static final String BASE_PRODUCT_URL = "/api/v1/baseProduct";
+    private static final String BASE_PRODUCT_BY_ID_URL = "/api/v1/baseProduct/{baseProductId}";
     private static final String DISH_URL = "/api/v1/dish";
     private static final String DISH_BY_ID_URL = "/api/v1/dish/{dishId}";
     private static final String PORTION_URL = "/api/v1/dish/{dishId}/portion";
@@ -32,17 +34,17 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions pageOfProducts(String params) {
+    public SneakyResultActions getPageOfBaseProducts(String params) {
         return new SneakyResultActions(
-                mockMvc.perform(get("/baseProducts" + params))
+                mockMvc.perform(get(BASE_PRODUCT_URL + params))
         );
     }
 
     @SneakyThrows
-    public SneakyResultActions create(CreateBaseProductRequest request) {
+    public SneakyResultActions createBaseProduct(CreateBaseProductRequest request) {
         return new SneakyResultActions(
                 mockMvc.perform(
-                        post("/baseProducts")
+                        post(BASE_PRODUCT_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 )
@@ -50,10 +52,10 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions update(Long baseProductId, UpdateBaseProductRequest request) {
+    public SneakyResultActions updateBaseProductById(Long baseProductId, UpdateBaseProductRequest request) {
         return new SneakyResultActions(
                 mockMvc.perform(
-                        put("/baseProducts/{baseProductId}", baseProductId)
+                        put(BASE_PRODUCT_BY_ID_URL, baseProductId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 )
@@ -61,32 +63,23 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions delete(Long baseProductId) {
+    public SneakyResultActions deleteBaseProductById(Long baseProductId) {
         return new SneakyResultActions(
                 mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/baseProducts/{baseProductId}", baseProductId)
+                        MockMvcRequestBuilders.delete(BASE_PRODUCT_BY_ID_URL, baseProductId)
                 )
         );
     }
 
     @SneakyThrows
-    public SneakyResultActions suggest(String name, EntityTypeDto type) {
-        return new SneakyResultActions(
-                mockMvc.perform(
-                        MockMvcRequestBuilders.get(SUGGEST_URL + "?name=" + name + "&type=" + type.name())
-                )
-        );
-    }
-
-    @SneakyThrows
-    public SneakyResultActions pageOfDishes(String params) {
+    public SneakyResultActions getPageOfDishes(String params) {
         return new SneakyResultActions(
                 mockMvc.perform(get(DISH_URL + params))
         );
     }
 
     @SneakyThrows
-    public SneakyResultActions findDishById(Long dishId) {
+    public SneakyResultActions getDishById(Long dishId) {
         return new SneakyResultActions(
                 mockMvc.perform(get(DISH_BY_ID_URL, dishId))
         );
@@ -104,7 +97,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions updateDish(Long dishId, UpdateDishDto dto) {
+    public SneakyResultActions updateDishById(Long dishId, UpdateDishDto dto) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         put(DISH_BY_ID_URL, dishId)
@@ -115,7 +108,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions deleteDish(Long dishId) {
+    public SneakyResultActions deleteDishById(Long dishId) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete(DISH_BY_ID_URL, dishId)
@@ -124,7 +117,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions createPortion(Long dishId, CreatePortionDto dto) {
+    public SneakyResultActions addPortionToDish(Long dishId, CreatePortionDto dto) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         post(PORTION_URL, dishId)
@@ -135,7 +128,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions updatePortion(Long dishId, Long portionId, UpdatePortionDto dto) {
+    public SneakyResultActions updatePortionById(Long dishId, Long portionId, UpdatePortionDto dto) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         put(PORTION_BY_ID_URL, dishId, portionId)
@@ -146,7 +139,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions deletePortion(Long dishId, Long portionId) {
+    public SneakyResultActions deletePortionById(Long dishId, Long portionId) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete(PORTION_BY_ID_URL, dishId, portionId)
@@ -155,7 +148,7 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions getMealHistory(String params) {
+    public SneakyResultActions getMealHistoryList(String params) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         get(MEAL_HISTORY_URL + params)
@@ -176,7 +169,7 @@ public class ApiCaller {
 
 
     @SneakyThrows
-    public SneakyResultActions updateMealHistory(Long mealHistoryId, UpdateMealHistoryDto dto) {
+    public SneakyResultActions updateMealHistoryById(Long mealHistoryId, UpdateMealHistoryDto dto) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         put(MEAL_HISTORY_BY_ID_URL, mealHistoryId)
@@ -187,10 +180,19 @@ public class ApiCaller {
     }
 
     @SneakyThrows
-    public SneakyResultActions deleteMealHistory(Long mealHistoryId) {
+    public SneakyResultActions deleteMealHistoryById(Long mealHistoryId) {
         return new SneakyResultActions(
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete(MEAL_HISTORY_BY_ID_URL, mealHistoryId)
+                )
+        );
+    }
+
+    @SneakyThrows
+    public SneakyResultActions suggestEntity(String name, EntityTypeDto type) {
+        return new SneakyResultActions(
+                mockMvc.perform(
+                        MockMvcRequestBuilders.get(SUGGEST_URL + "?name=" + name + "&type=" + type.name())
                 )
         );
     }

@@ -73,7 +73,7 @@ public class MealHistoryTest extends WithDataBase {
         doReturn(ZoneId.systemDefault()).when(clock).getZone();
 
         var update = new UpdateMealHistoryDto().dishId(2L).consumedAt(OffsetDateTime.parse("1970-01-01T16:16:40+03:00"));
-        caller.updateMealHistory(createdId, update)
+        caller.updateMealHistoryById(createdId, update)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -109,14 +109,14 @@ public class MealHistoryTest extends WithDataBase {
 
         assertThat(mealHistoryRepository.findById(createdId)).isNotEmpty();
 
-        caller.deleteMealHistory(createdId).andExpect(status().isOk());
+        caller.deleteMealHistoryById(createdId).andExpect(status().isOk());
         assertThat(mealHistoryRepository.findById(createdId)).isEmpty();
     }
 
     @DatabaseSetup("/repository/dish/before/demo_dish.xml")
     @Test
     void emptySearch() {
-        caller.getMealHistory("?date=1970-01-01")
+        caller.getMealHistoryList("?date=1970-01-01")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -137,7 +137,7 @@ public class MealHistoryTest extends WithDataBase {
         caller.createMealHistory(create)
                 .andExpect(status().isCreated());
 
-        caller.getMealHistory("?date=1970-01-01")
+        caller.getMealHistoryList("?date=1970-01-01")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -183,7 +183,7 @@ public class MealHistoryTest extends WithDataBase {
         doReturn(ZoneId.systemDefault()).when(clock).getZone();
 
         var update = new UpdateMealHistoryDto().dishId(2L).consumedAt(OffsetDateTime.parse("1970-01-01T16:16:40+03:00"));
-        caller.updateMealHistory(createdId, update)
+        caller.updateMealHistoryById(createdId, update)
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {

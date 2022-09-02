@@ -22,7 +22,7 @@ public class BaseProductApiTest extends WithDataBase {
             assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
     )
     void createBaseProduct() {
-        caller.create(Repo.CREATE_MILK_REQUEST.get())
+        caller.createBaseProduct(Repo.CREATE_MILK_REQUEST.get())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(
                 """
@@ -47,7 +47,7 @@ public class BaseProductApiTest extends WithDataBase {
     )
     @Test
     void createSeveralBaseProducts() {
-        caller.create(Repo.CREATE_MILK_REQUEST.get())
+        caller.createBaseProduct(Repo.CREATE_MILK_REQUEST.get())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(
                         """
@@ -64,7 +64,7 @@ public class BaseProductApiTest extends WithDataBase {
                            """,
                         true
                 ));
-        caller.create(Repo.CREATE_PROTEIN_REQUEST.get())
+        caller.createBaseProduct(Repo.CREATE_PROTEIN_REQUEST.get())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(
                         """
@@ -89,7 +89,7 @@ public class BaseProductApiTest extends WithDataBase {
     )
     @Test
     void updateBaseProduct() {
-        var baseProduct = caller.create(Repo.CREATE_MILK_REQUEST.get())
+        var baseProduct = caller.createBaseProduct(Repo.CREATE_MILK_REQUEST.get())
                 .andExpect(status().isCreated())
                 .andReturnAs(BaseProductDto.class);
 
@@ -99,7 +99,7 @@ public class BaseProductApiTest extends WithDataBase {
                 .fats(1002.0)
                 .carbs(1003.0);
 
-        caller.update(
+        caller.updateBaseProductById(
                         baseProduct.getId(),
                         new UpdateBaseProductRequest()
                                 .name(baseProduct.getName() + "_updated")
@@ -130,12 +130,12 @@ public class BaseProductApiTest extends WithDataBase {
     @DatabaseSetup("/repository/base_product/before/products_before_delete.xml")
     @Test
     void deleteBaseProduct() {
-        caller.delete(2L).andExpect(status().isOk());
+        caller.deleteBaseProductById(2L).andExpect(status().isOk());
     }
 
     @Test
     void emptyPage() {
-        caller.pageOfProducts("?page=0&size=3")
+        caller.getPageOfBaseProducts("?page=0&size=3")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -153,10 +153,10 @@ public class BaseProductApiTest extends WithDataBase {
         for (int i = 1; i < 110; i++) {
             var request = Repo.CREATE_PROTEIN_REQUEST.get();
             request.name(request.getName() + i);
-            caller.create(request).andExpect(status().isCreated());
+            caller.createBaseProduct(request).andExpect(status().isCreated());
         }
 
-        caller.pageOfProducts("?page=0&size=3")
+        caller.getPageOfBaseProducts("?page=0&size=3")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -198,7 +198,7 @@ public class BaseProductApiTest extends WithDataBase {
                           ]
                         }""", true));
 
-        caller.pageOfProducts("?page=1&size=3")
+        caller.getPageOfBaseProducts("?page=1&size=3")
                 .andExpect(content().json("""
                         {
                           "size": 3,
@@ -239,7 +239,7 @@ public class BaseProductApiTest extends WithDataBase {
                           ]
                         }""", true));
 
-        caller.pageOfProducts("?page=36&size=3")
+        caller.getPageOfBaseProducts("?page=36&size=3")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -266,17 +266,17 @@ public class BaseProductApiTest extends WithDataBase {
     void filterByName() {
         var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
         request1.name("ABC");
-        caller.create(request1).andExpect(status().isCreated());
+        caller.createBaseProduct(request1).andExpect(status().isCreated());
 
         var request2 = Repo.CREATE_PROTEIN_REQUEST.get();
         request2.name("ABCD");
-        caller.create(request2).andExpect(status().isCreated());
+        caller.createBaseProduct(request2).andExpect(status().isCreated());
 
         var request3 = Repo.CREATE_PROTEIN_REQUEST.get();
         request3.name("ABCDE");
-        caller.create(request3).andExpect(status().isCreated());
+        caller.createBaseProduct(request3).andExpect(status().isCreated());
 
-        caller.pageOfProducts("?name=BCD&page=0&size=10")
+        caller.getPageOfBaseProducts("?name=BCD&page=0&size=10")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -314,9 +314,9 @@ public class BaseProductApiTest extends WithDataBase {
     void filterByNameLowercase() {
         var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
         request1.name("ABC");
-        caller.create(request1).andExpect(status().isCreated());
+        caller.createBaseProduct(request1).andExpect(status().isCreated());
 
-        caller.pageOfProducts("?name=abc&page=0&size=10")
+        caller.getPageOfBaseProducts("?name=abc&page=0&size=10")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -343,9 +343,9 @@ public class BaseProductApiTest extends WithDataBase {
     void filterByNameLowercaseCyrillic() {
         var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
         request1.name("АБС");
-        caller.create(request1).andExpect(status().isCreated());
+        caller.createBaseProduct(request1).andExpect(status().isCreated());
 
-        caller.pageOfProducts("?name=абс&page=0&size=10")
+        caller.getPageOfBaseProducts("?name=абс&page=0&size=10")
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {
@@ -372,19 +372,19 @@ public class BaseProductApiTest extends WithDataBase {
     void sorting() {
         var request = Repo.CREATE_PROTEIN_REQUEST.get();
         request.name(request.getName() + 4);
-        var id = caller.create(request).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();
+        var id = caller.createBaseProduct(request).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();
         var request1 = Repo.CREATE_PROTEIN_REQUEST.get();
         request1.name(request1.getName() + 3);
-        var id1 = caller.create(request1).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();;
+        var id1 = caller.createBaseProduct(request1).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();;
         var request2 = Repo.CREATE_PROTEIN_REQUEST.get();
         request2.name(request2.getName() + 3);
-        var id2 = caller.create(request2).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();;
+        var id2 = caller.createBaseProduct(request2).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();;
         var request3 = Repo.CREATE_PROTEIN_REQUEST.get();
         request3.name(request3.getName() + 2);
-        var id3 = caller.create(request3).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();
+        var id3 = caller.createBaseProduct(request3).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();
         var request4 = Repo.CREATE_PROTEIN_REQUEST.get();
         request4.name(request4.getName() + 1);
-        var id4 = caller.create(request4).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();
+        var id4 = caller.createBaseProduct(request4).andExpect(status().isCreated()).andReturnAs(BaseProductDto.class).getId();
 
         int intId = Math.toIntExact(id);
         int intId1 = Math.toIntExact(id1);
@@ -392,19 +392,19 @@ public class BaseProductApiTest extends WithDataBase {
         int intId3 = Math.toIntExact(id3);
         int intId4 = Math.toIntExact(id4);
 
-        caller.pageOfProducts("?page=0&size=5&sort=id,asc")
+        caller.getPageOfBaseProducts("?page=0&size=5&sort=id,asc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId, intId1, intId2, intId3, intId4)));
 
-        caller.pageOfProducts("?page=0&size=5&sort=id,desc")
+        caller.getPageOfBaseProducts("?page=0&size=5&sort=id,desc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId2, intId1, intId)));
 
-        caller.pageOfProducts("?page=0&size=5&sort=name,asc,id,asc")
+        caller.getPageOfBaseProducts("?page=0&size=5&sort=name,asc,id,asc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId1, intId2, intId)));
 
-        caller.pageOfProducts("?page=0&size=5&sort=name,asc,id,desc")
+        caller.getPageOfBaseProducts("?page=0&size=5&sort=name,asc,id,desc")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id").value(contains(intId4, intId3, intId2, intId1, intId)));
     }
